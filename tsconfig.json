@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
@@ -22,7 +23,21 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "paths": {
+      // "@app/*": ["src/app/*"],
+      "@env/*": ["src/environments/*"],
+      // "@core/*": ["src/app/core/*"],
+      "@services/*": ["src/app/core/services/*"],
+      "@interfaces/*": ["src/app/core/interfaces/*"],
+      "@guards/*": ["src/app/core/guards/*"],
+      // "@shared/*": ["src/app/shared/*"],
+      "@pipes/*": ["src/app/shared/pipes/*"],
+      "@auth/*": ["src/app/auth/*"],
+      // "@modules/*": ["src/app/modules/*"],
+      // "@models/*": ["src/app/models/*"],
+      // "@utils/*": ["src/app/utils/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
