@@ -7,3 +7,11 @@
   border-right-style: hidden !important;
   /* outline: none !important; */
 }
+
+::ng-deep .mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+  background-color: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  width: 100% !important;
+}

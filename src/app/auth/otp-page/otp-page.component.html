@@ -11,27 +11,33 @@
   <span class="text-base">Ingresar OTP</span>
 </header>
 
-<!-- <div class="otp-container">
-  <input aria-label="otp_1" placeholder="*" matInput type="text" maxlength="1" (keyup)="moveFocus($event, 0)">
-  <input aria-label="otp_2" placeholder="*" matInput type="text" maxlength="1" (keyup)="moveFocus($event, 1)">
-  <input aria-label="otp_3" placeholder="*" matInput type="text" maxlength="1" (keyup)="moveFocus($event, 2)">
-  <input aria-label="otp_4" placeholder="*" matInput type="text" maxlength="1" (keyup)="moveFocus($event, 3)">
-</div> -->
 
-
-<div class="flex space-x-7 pt-4" data-hs-pin-input="">
-  <input #otpInput1 type="text" maxlength="1" (keyup)="moveFocus($event, 0)"
-  class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬" autofocus>
-  <input #otpInput2 type="text" maxlength="1" (keyup)="moveFocus($event, 1)"
-  class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
-  <input #otpInput3 type="text" maxlength="1" (keyup)="moveFocus($event, 2)"
-  class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
-  <input #otpInput4 type="text" maxlength="1" (keyup)="moveFocus($event, 3)"
-  class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
-</div>
-
-
-<button (click)="sendOtp()">Enviar OTP</button>
+<section class="pt-6 w-full">
+  <div class="flex space-x-7 pt-4 pb-2" data-hs-pin-input="">
+    <input #otpInput1 type="text" maxlength="1" (keyup)="moveFocus($event, 0)"
+    class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬" autofocus>
+    <input #otpInput2 type="text" maxlength="1" (keyup)="moveFocus($event, 1)"
+    class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
+    <input #otpInput3 type="text" maxlength="1" (keyup)="moveFocus($event, 2)"
+    class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
+    <input #otpInput4 type="text" maxlength="1" (keyup)="moveFocus($event, 3)"
+    class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
+  </div>
+  
+  
+  
+  <p class="pt-3 text-pretty text-sm">
+    Ingresa el NIT de tu empresa para acceder a la plataforma.
+    Recuerda que se enviara un código de verificación a tu correo electrónico registrado.
+  </p>
+  
+  
+  
+  <div class="flex justify-between items-center pt-8">
+    <a mat-button href="/auth/login" color="primary">¿No tienes acceso al correo?</a>
+    <button (click)="sendOtp()" mat-flat-button color="primary" type="submit" >Siguiente</button>
+  </div>
+</section>
 
 
 

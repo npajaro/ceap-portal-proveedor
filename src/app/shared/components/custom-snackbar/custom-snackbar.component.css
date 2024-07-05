@@ -3,3 +3,28 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.mat-mdc-unelevated-button:not(:disabled) {
+  background-color: #f44336;
+  color: white;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02857em;
+  line-height: 1.75;
+  min-width: 64px;
+  box-sizing: border-box;
+  transition: background-color 0.3s;
+}
+
+/* :host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.example-pizza-party {
+  color: hotpink;
+} */

@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, inject, NgModule, ViewC
 import { TruncatePipe } from '@pipes/truncate.pipe';
 import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { ToastId } from '../../core/interfaces/toast-Id.enum';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-otp-page',
@@ -13,6 +14,7 @@ import { ToastId } from '../../core/interfaces/toast-Id.enum';
     imports: [
         CommonModule,
         TruncatePipe,
+        MatButtonModule,
     ],
 })
 export class OtpPageComponent {
@@ -55,11 +57,12 @@ export class OtpPageComponent {
   sendOtp() {
     // Validar que los 4 campos esten llenos
     if (this.getOtp().length < 4) {
-      this.coreSncakbarSv.openSuccess('Debe llenar todos los campos', 'Cerrar', ToastId.ERROR);
+      this.coreSncakbarSv.openSuccess('Debe ingresar OTP', 'Cerrar', ToastId.WARNING);
       console.log('Debe llenar todos los campos');
       return;
     }
 
+    this.coreSncakbarSv.close();
 
     console.log('OTP:', this.getOtp());
   }

@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
+import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MAT_SNACK_BAR_DATA, MatSnackBarActions, MatSnackBarLabel, MatSnackBarModule, MatSnackBarAction } from '@angular/material/snack-bar';
 import { ToastId } from '@interfaces/toast-Id.enum';
 import { CoreSnackbarService } from '@services/core-snackbar.service';
 
@@ -9,6 +11,11 @@ import { CoreSnackbarService } from '@services/core-snackbar.service';
   standalone: true,
   imports: [
     CommonModule,
+    // MatSnackBarActions,
+    // MatSnackBarAction,
+    MatSnackBarLabel,
+    MatButton,
+    // MatIconModule
   ],
   templateUrl: './custom-snackbar.component.html',
   styleUrl: './custom-snackbar.component.css',

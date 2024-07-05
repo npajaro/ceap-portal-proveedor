@@ -21,10 +21,14 @@ export class CoreSnackbarService {
         snackBar: this._snackBar
       },
       panelClass: [`${toastId}-snackbar`],
-      duration: 4500,
+      // duration: 4500,
       verticalPosition: 'bottom',
-      horizontalPosition: 'center'
+      horizontalPosition: 'left'
     });
+  }
+
+  close() {
+    this._snackBar.dismiss();
   }
 
 

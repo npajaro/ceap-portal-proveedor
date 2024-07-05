@@ -1,23 +1,54 @@
 @switch (toastId) {
   @case (typeToastId.SUCCESS) {
-    <div class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header">
-        <strong class="mr-auto">Success</strong>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+    <div id="alert-border-3" class="flex justify-between rounded-md h-12 items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50" role="alert">
+      <div class="flex items-center sm:min-w-[370px]">
+        <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+        </svg>
+        <div class="ms-3 text-sm font-medium">
+          {{data.message}}
+        </div>
       </div>
-      <div class="toast-body">
-        {{ data.message }}
-      </div>
+
+      <button class="" mat-button (click)="closeSnackBar()">
+        <span class="text-green-800">{{data.action}}</span> 
+      </button>
     </div>
   }
   @case (typeToastId.ERROR) {
-    <div class="snackbar-content">
-      <span>{{ data.message }}</span>
-      <button mat-button (click)="closeSnackBar()">Cerrar</button>
+    <div id="alert-border-2" class="flex justify-between rounded-md h-12 items-center p-4 mb-4 text-red-800 border-t-4 border-red-300 bg-red-50" role="alert">
+      <div class="flex items-center sm:min-w-[370px]">
+        <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+        </svg>
+        <div class="ms-3 text-sm font-medium">
+          {{data.message}}
+        </div>
+      </div>
+    
+      <button class="" mat-button (click)="closeSnackBar()">
+        <span class="text-red-800">{{data.action}}</span> 
+      </button>
+  </div>
+
+  }
+  @case (typeToastId.WARNING) {
+    <div id="alert-border-4" class="flex justify-between rounded-md h-12 items-center p-4 mb-4 text-yellow-800 border-t-4 border-yellow-300 bg-yellow-50" role="alert">
+      <div class="flex items-center sm:min-w-[370px]">
+        <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+        </svg>
+        <div class="ms-3 mr-8 text-sm font-medium">
+          {{data.message}}
+        </div>
+      </div>
+
+      <button class="" mat-button (click)="closeSnackBar()">
+        <span class="text-yellow-800">{{data.action}}</span> 
+      </button>
     </div>
   }
+
   @default {
     <div class="toast toast-info" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
