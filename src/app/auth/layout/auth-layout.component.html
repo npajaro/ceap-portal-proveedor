@@ -1,16 +1,14 @@
 <mat-sidenav-container>
   <main class="sm:bg-[#f0f4f9] flex flex-col justify-center items-center min-h-screen bg-white">
     <section class="flex-grow w-full h-full sm:w-auto sm:max-w-md sm:max-h-[528px] relative px-[1px]">
-      <section class="rounded-[28px]">
-        <!-- <app-loading-spinner/> -->
-        <!--w-full h-full sm:w-auto sm:max-w-md sm:max-h-[528px] relative px-[1px] -->
+      <section class="rounded-[28px] overflow-hidden relative">
+        <app-loading-spinner />
         <section class="p-5 relative z-20 sm:min-h-[435px] sm:min-w-[446px] bg-white rounded-[28px]">
-          <router-outlet/>
+          
+            <router-outlet/>
+          
         </section>
       </section>
-
-
-
     </section>
     <footer class="pt-36 w-[445px] sm:pt-0 text-gray-600 pb-4 md:pb-0">
       <div class="mt-10 text-center text-sm md:flex md:justify-between md:items-center">
@@ -23,10 +21,9 @@
         </div>
       </div>
     </footer>
-
-
   </main>
 </mat-sidenav-container>
+
 
 
 

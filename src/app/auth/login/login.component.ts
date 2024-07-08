@@ -10,24 +10,26 @@ import { Router } from '@angular/router';
 import { Tercero } from '@interfaces/tercero.interface';
 import { ApiService } from '@services/api.service';
 import { ValidatorsService } from '@services/validators.service';
+import { LoadingSpinnerComponent } from "../../shared/components/loading-spinner/loading-spinner.component";
 
 
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatButtonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatProgressBarModule
-  ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+    selector: 'app-login',
+    standalone: true,
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.css',
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatButtonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatProgressBarModule,
+        LoadingSpinnerComponent
+    ]
 })
 export class LoginComponent implements OnInit{
 

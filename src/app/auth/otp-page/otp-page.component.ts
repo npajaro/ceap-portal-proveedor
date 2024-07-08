@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, NgModule, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, NgModule, ViewChild } from '@angular/core';
 import { TruncatePipe } from '@pipes/truncate.pipe';
 import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { ToastId } from '../../core/interfaces/toast-Id.enum';
@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
     standalone: true,
     templateUrl: './otp-page.component.html',
     styleUrl: './otp-page.component.css',
-    // changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CommonModule,
         TruncatePipe,
@@ -23,10 +23,19 @@ export class OtpPageComponent {
   @ViewChild('otpInput3') otpInput3!: ElementRef;
   @ViewChild('otpInput4') otpInput4!: ElementRef;
 
-  private coreSncakbarSv = inject(CoreSnackbarService);
+  private coreSnackbarService = inject(CoreSnackbarService);
   private ToastId = ToastId;
+  private cdRef = inject(ChangeDetectorRef);
 
   otp: string[] = ['', '', '', ''];
+  countdown: number = 120;
+  isResendDisabled: boolean = true;
+  interval: any;
+
+  ngOnInit() {
+    // this.startCountdown();
+    console.log('OTP Page');
+  }
 
   moveFocus(event: KeyboardEvent, index: number) {
     const input = event.target as HTMLInputElement;
@@ -41,8 +50,6 @@ export class OtpPageComponent {
     }
   }
 
-  // Optener el valor del OTP para luego enviarlo al servidor
-
   getOtp() {
     return [
       this.otpInput1.nativeElement.value,
@@ -52,19 +59,50 @@ export class OtpPageComponent {
     ].join('');
   }
 
-  // Enviar el OTP al servidor
-
   sendOtp() {
-    // Validar que los 4 campos esten llenos
     if (this.getOtp().length < 4) {
-      this.coreSncakbarSv.openSuccess('Debe ingresar OTP', 'Cerrar', ToastId.WARNING);
+      this.coreSnackbarService.openSuccess('Debe ingresar OTP', 'Cerrar', this.ToastId.WARNING);
       console.log('Debe llenar todos los campos');
       return;
     }
-
-    this.coreSncakbarSv.close();
-
+    this.coreSnackbarService.close();
+    this.startCountdown();
     console.log('OTP:', this.getOtp());
+  }
+
+  requestNewCode() {
+    this.coreSnackbarService.openSuccess('Código OTP reenviado al corrreo', 'Cerrar', this.ToastId.SUCCESS);
+    console.log('¿Estás seguro de que quieres solicitar un nuevo código?');
+    this.resetCountdown();
+  }
+
+  resendOtp() {
+    if (this.getOtp().length > 0) {
+      this.coreSnackbarService.openSuccess('¿Estás seguro de que quieres reenviar el OTP?', 'Reenviar', this.ToastId.SUCCESS);
+      console.log('¿Estás seguro de que quieres reenviar el OTP?');
+      return;
+    }
+    this.coreSnackbarService.close();
+    console.log('Reenviar OTP', this.getOtp());
+    this.resetCountdown();
+  }
+
+  startCountdown() {
+    this.interval = setInterval(() => {
+      if (this.countdown > 0) {
+        this.countdown--;
+      } else {
+        this.isResendDisabled = false;
+        clearInterval(this.interval);
+      }
+      this.cdRef.markForCheck(); // Marca el componente para verificar cambios
+    }, 1000);
+  }
+
+  resetCountdown() {
+    this.countdown = 120;
+    this.isResendDisabled = true;
+    this.startCountdown();
   }
 
 

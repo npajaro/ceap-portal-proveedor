@@ -1,48 +1,16 @@
-<!-- <div class="min-h-screen flex items-center justify-center bg-gray-50">
-  <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col w-full max-w-md">
-    <div class="flex justify-center mb-4">
-      <img src="assets/google-logo.png" alt="Google Logo" class="w-12 h-12">
-    </div>
-    <h2 class="text-center text-2xl font-semibold text-gray-700 mb-6">Acceder</h2>
-    <p class="text-center text-gray-600 mb-4">Usa tu Cuenta de Google</p>
-    <form>
-      <div class="mb-4">
-        <mat-form-field class="w-full">
-          <input matInput placeholder="Correo electrónico o teléfono" type="email" required>
-        </mat-form-field>
-      </div>
-      <div class="flex items-center justify-between">
-        <a href="#" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">¿Olvidaste el correo electrónico?</a>
-      </div>
-      <div class="mt-6 mb-4">
-        <button class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-          Siguiente
-        </button>
-      </div>
-      <p class="text-center text-gray-600 text-sm mb-4">¿Esta no es tu computadora? Usa el modo de invitado para navegar de forma privada. <a href="#" class="text-blue-500 hover:text-blue-800">Más información para usar el modo de invitado</a></p>
-      <div class="flex justify-center">
-        <a href="#" class="text-blue-500 hover:text-blue-800">Crear cuenta</a>
-      </div>
-    </form>
-  </div>
-</div> -->
-
-
+<!-- Component: LoginComponent -->
 <header class="flex flex-col ">
-  <!-- <svg version="1.1" id="Layer1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="58px" height="58px" viewBox="0 0 601.318 601.318" enable-background="new 0 0 601.318 601.318" xml:space="preserve"><path id="color_x5F_1" fill="#59595C" d="M462.85,332.419c3.235,24.863-14.294,47.626-39.161,50.858    c-24.874,3.231-47.63-14.298-50.857-39.157c-3.235-24.862,14.294-47.63,39.152-50.861    C436.85,290.027,459.622,307.561,462.85,332.419z M337.53,366.633l-69.164,8.991c-3.131,0.409-5.348,3.284-4.943,6.427    c2.888,22.205,23.306,37.922,45.502,35.039c22.197-2.888,37.923-23.297,35.027-45.506    C343.548,368.445,340.669,366.225,337.53,366.633z M366.037,597.045l-18.113-75.312h-94.523l-18.128,75.312    C101.047,567.195,0.659,447.498,0.659,304.273c0-165.685,134.307-300,299.992-300c165.693,0,300.008,134.315,300.008,300    C600.659,447.494,500.27,567.195,366.037,597.045z M448.912,466.634c59.157-7.694,100.889-61.891,93.205-121.061l-6.01-46.129    c-7.684-59.169-61.883-100.898-121.056-93.214l-122.384,15.912c-3.794-29.182,8.648-56.734,30.222-73.746    c8.947,12.3,23.993,19.576,40.139,17.477c23.508-3.054,40.099-24.588,37.041-48.108c-3.058-23.511-24.608-40.094-48.099-37.044    c-23.532,3.061-40.114,24.603-37.057,48.115c0.121,0.881,0.437,1.67,0.606,2.528c-28.725,20.494-45.566,55.731-40.713,93.099    l-122.391,15.907c-59.173,7.693-100.906,61.887-93.205,121.061l5.994,46.133c7.685,59.165,61.883,100.898,121.056,93.209    L448.912,466.634z M177.629,323.719c-24.875,3.232-42.388,26.008-39.153,50.862c3.227,24.862,25.983,42.388,50.857,39.156    c24.867-3.231,42.38-25.995,39.153-50.853C225.25,338.021,202.495,320.488,177.629,323.719z"></path></svg> -->
   <picture class="">
     <source srcset="assets/icon_proveedor.png" type="image/png">
     <img src="assets/icon_proveedor.png" title="Icono CEAP" alt="Logo" loading="lazy" class="w-8 h-auto">
   </picture>
-
-  <div class=" py-4">
+  <div class="py-4">
     <h1 class="text-3xl text-gray-600">Inicia sesión</h1>
   </div>
   <span class="text-base">Ir a CEAP</span>
 </header>
 
 <form class="pt-6 w-full" [formGroup]="loginForm" autocomplete="on">
-
   <mat-form-field appearance="outline" class="w-full pb-2">
     <mat-label>Ingrese Nit</mat-label>
     <input type="text" matInput title="Número de Identificación Tributaria" formControlName="numberNit" id="numberNit" />
@@ -55,20 +23,12 @@
       </mat-error>
     }
   </mat-form-field>
-
-
   <p class="pt-2 text-pretty text-sm">
-    Ingresa el NIT de tu empresa para acceder a la plataforma.
-    Recuerda que se enviara un código de verificación a tu correo electrónico registrado.
+    Ingresa el NIT de tu empresa para acceder a la plataforma. Recuerda que se enviara un código de verificación a tu correo electrónico registrado.
   </p>
-
-
-
   <div class="flex justify-between items-center pt-8">
-
     <a mat-button href="/auth/login" color="primary">¿No tienes acceso al correo?</a>
-    <button (click)="login()" mat-flat-button color="primary" type="submit" >Siguiente</button>
+    <button (click)="login()" mat-flat-button color="primary" type="submit">Siguiente</button>
   </div>
-
 </form>
 
