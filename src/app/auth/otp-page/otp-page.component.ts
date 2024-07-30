@@ -4,6 +4,7 @@ import { TruncatePipe } from '@pipes/truncate.pipe';
 import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { ToastId } from '../../core/interfaces/toast-Id.enum';
 import { MatButtonModule } from '@angular/material/button';
+import { Tercero } from '@interfaces/tercero.interface';
 
 @Component({
     selector: 'app-otp-page',
@@ -23,9 +24,11 @@ export class OtpPageComponent {
   @ViewChild('otpInput3') otpInput3!: ElementRef;
   @ViewChild('otpInput4') otpInput4!: ElementRef;
 
-  private coreSnackbarService = inject(CoreSnackbarService);
-  private ToastId = ToastId;
-  private cdRef = inject(ChangeDetectorRef);
+  private coreSnackbarService   = inject(CoreSnackbarService);
+  private cdRef                 = inject(ChangeDetectorRef);
+  private ToastId               = ToastId;
+
+  public dataTercero: Tercero = localStorage.getItem('tercero') ? JSON.parse(localStorage.getItem('tercero') as string) : {};
 
   otp: string[] = ['', '', '', ''];
   countdown: number = 120;
@@ -34,7 +37,8 @@ export class OtpPageComponent {
 
   ngOnInit() {
     // this.startCountdown();
-    console.log('OTP Page');
+    this.startCountdown();
+    console.log(this.dataTercero);
   }
 
   moveFocus(event: KeyboardEvent, index: number) {
@@ -61,24 +65,24 @@ export class OtpPageComponent {
 
   sendOtp() {
     if (this.getOtp().length < 4) {
-      this.coreSnackbarService.openSuccess('Debe ingresar OTP', 'Cerrar', this.ToastId.WARNING);
+      this.coreSnackbarService.openSnackbar('Debe ingresar OTP', 'Cerrar', this.ToastId.WARNING);
       console.log('Debe llenar todos los campos');
       return;
     }
     this.coreSnackbarService.close();
-    this.startCountdown();
+    // this.startCountdown();
     console.log('OTP:', this.getOtp());
   }
 
   requestNewCode() {
-    this.coreSnackbarService.openSuccess('Código OTP reenviado al corrreo', 'Cerrar', this.ToastId.SUCCESS);
+    this.coreSnackbarService.openSnackbar(`Código OTP reenviado al corrreo ${this.dataTercero.email.toLowerCase()}`, 'Cerrar', this.ToastId.SUCCESS);
     console.log('¿Estás seguro de que quieres solicitar un nuevo código?');
     this.resetCountdown();
   }
 
   resendOtp() {
     if (this.getOtp().length > 0) {
-      this.coreSnackbarService.openSuccess('¿Estás seguro de que quieres reenviar el OTP?', 'Reenviar', this.ToastId.SUCCESS);
+      this.coreSnackbarService.openSnackbar('¿Estás seguro de que quieres reenviar el OTP?', 'Reenviar', this.ToastId.SUCCESS);
       console.log('¿Estás seguro de que quieres reenviar el OTP?');
       return;
     }

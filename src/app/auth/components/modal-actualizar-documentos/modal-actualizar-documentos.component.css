@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+
+h3 {
+  font-size: 1rem /* 16px */;
+  line-height: 1.5rem /* 24px */;
+  font-weight: bold;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+
+::ng-deep .mat-mdc-dialog-container .mat-mdc-dialog-title {
+  color: #ea0a0a !important;
+}

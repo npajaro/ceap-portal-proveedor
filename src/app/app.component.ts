@@ -18,7 +18,6 @@ export class AppComponent implements OnDestroy {
 
   constructor() {
     this.titleSub$ = this.argumentoRuta()
-
   }
   ngOnDestroy(): void {
     throw new Error('Method not implemented.');
@@ -33,5 +32,13 @@ export class AppComponent implements OnDestroy {
       console.log(data);
       document.title = `CEAP - ${data.snapshot.data['title']}`;
     })
+  }
+
+  loadCaptchaScript() {
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
   }
 }

@@ -4,7 +4,7 @@
     <img src="assets/icon_proveedor.png" title="Icono CEAP" alt="Logo" loading="lazy" class="w-8 h-auto">
   </picture>
   <div class="py-4">
-    <h1 class="text-3xl text-gray-600">{{'Hola 👋 ' + ['{Inversisa SAS}' | truncate: 15] }}</h1>
+    <h1 class="text-xl text-gray-600">{{'HOLA 👋 ' + [(dataTercero.razon_social | truncate: 26) | uppercase] }}</h1>
   </div>
   <span class="text-base">Ingresar OTP</span>
 </header>
@@ -20,44 +20,15 @@
     <input #otpInput4 type="text" maxlength="1" (keyup)="moveFocus($event, 3)"
     class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
   </div>
-  
+
   <p class="pt-7 text-pretty text-sm">
-    Se ha enviado un código de verificación a tu correo electrónico. inv***.co. 
+    Se ha enviado un código de verificación a tu correo electrónico. <span class="font-bold">{{dataTercero.email}} </span>
     Este correo es el registrado en el sistema, <br>
     Para solicitar un nuevo código, debes esperar {{countdown}} segundos.
   </p>
-  
+
   <div class="flex justify-between items-center pt-8">
     <button mat-button color="primary" (click)="requestNewCode()" [disabled]="isResendDisabled">Reenviar código</button>
     <button (click)="sendOtp()" mat-flat-button color="primary" type="submit">Siguiente</button>
   </div>
 </section>
-
-
-
-<!-- <form class="pt-6 w-full" [formGroup]="otpForm" autocomplete="on">
-
-  <mat-form-field appearance="outline" class="w-full pb-2">
-    <mat-label>Ingrese OTP</mat-label>
-    <input type="number" matInput title="Código de verificación" formControlName="otp" />
-    @if (isValidField('otp')) {
-      <mat-error class="font-semibold">
-        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-        </svg>
-        {{ getFieldError('otp') }}
-      </mat-error>
-    }
-  </mat-form-field>
-
-  <p class="pt-2 text-pretty text-sm">
-    Ingresa el código de verificación que enviamos a tu correo electrónico.
-  </p>
-
-  <div class="flex justify-between items-center pt-8">
-
-    <a mat-button href="/auth/login" color="primary">¿No recibiste el código?</a>
-    <button (click)="login()" mat-flat-button color="primary" type="submit" >Ingresar</button>
-  </div>
-
-</form> -->

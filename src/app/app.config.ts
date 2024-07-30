@@ -3,16 +3,17 @@ import { provideRouter, withViewTransitions } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,
       withViewTransitions(),
     ),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withInterceptorsFromDi(), withFetch()),
+    importProvidersFrom(HttpClient),
     provideAnimationsAsync(),
   ]
 };

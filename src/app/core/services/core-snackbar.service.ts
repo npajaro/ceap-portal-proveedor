@@ -10,7 +10,7 @@ export class CoreSnackbarService {
 
   private _snackBar = inject(MatSnackBar);
 
-  openSuccess(message: string, action: string, toastId: ToastId) {
+  openSnackbar(message: string, action: string, toastId: ToastId) {
     this.toastId = toastId;
     this._snackBar.openFromComponent(CustomSnackbarComponent, {
       data: {
@@ -21,7 +21,7 @@ export class CoreSnackbarService {
         snackBar: this._snackBar
       },
       panelClass: [`${toastId}-snackbar`],
-      // duration: 4500,
+      // duration: 9000,
       verticalPosition: 'bottom',
       horizontalPosition: 'left'
     });
