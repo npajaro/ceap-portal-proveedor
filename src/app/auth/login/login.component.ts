@@ -101,6 +101,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('tercero', JSON.stringify(this.tercero));
         // console.log('Tercero:', this.tercero);
         this.spinnerSv.hide();
+        console.log('navego')
         // this.router.navigate(['/auth/otp-validators'])
         this.router.navigateByUrl('/auth/otp-validators');
         this.coreSnackbarService.close();

@@ -1,3 +1,175 @@
-:host {
-  display: block;
+/* .grid-container {
+  margin: 20px;
 }
+
+.dashboard-card {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+}
+
+.more-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.dashboard-card-content {
+  text-align: center;
+} */
+
+.sidenav-container {
+  height: 100%;
+}
+
+/* .sidenav {
+  width: 100px;
+} */
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+/* .mat-toolbar {
+  box-shadow: 0 0.02px 0.05px 0 rgba(0, 0, 0, 0.26);
+  background-color: rgb(243 244 246);
+} */
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+mat-icon {
+  margin-right: 16px;
+}
+
+::ng-deep .centered-button .mat-icon {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+::ng-deep .mat-mdc-button>.mat-icon, .mat-mdc-unelevated-button>.mat-icon, .mat-mdc-raised-button>.mat-icon, .mat-mdc-outlined-button>.mat-icon {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  font-size: 1.5rem !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+.active {
+  background-color: #b2d7b2cb;
+  color: #006d35;
+}
+
+::ng-deep .mat-icon:hover, mat-icon.mat-primary:hover, mat-icon.mat-accent:hover, mat-icon.mat-warn:hover {
+  /* background-color: #b2d7b2cb; */
+  /* color: #006d35; */
+  transform: scale(1.05);
+  transition: transform 1.0s ease;
+}
+
+.active-link {
+  background-color: #b2d7b2cb;
+  /* transform: scale(1.05);
+  transition: transform 0.3s ease; */
+}
+
+.active-link-select {
+  background-color: #b2d7b2cb;
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.mat-mdc-button:not(:disabled) {
+  color: #059b4d;
+}
+
+.mat-mdc-button:hover {
+  background-color: #b2d7b2cb;
+  color: #006d35;
+}
+
+.mat-mdc-button.active {
+  color: #006d35; /* Cambia el color del botón cuando el enlace esté activo */
+}
+
+/* ::ng-deep .mat-toolbar-row, .mat-toolbar-single-row {
+  padding: 0px !important;
+} */
+
+
+
+
+.hover\:scale-105 {
+  transition: transform 0.3s ease; /* Añade una transición suave */
+}
+
+.hover\:scale-105:hover {
+  transform: scale(1.05); /* Escala el elemento al 105% cuando se pasa el cursor sobre él */
+}
+
+.active {
+  background-color: #b2d7b2cb;
+  transform: scale(1.05);
+}
+
+.mat-mdc-button:not(:disabled) {
+  color: #059b4d;
+}
+
+.mat-mdc-button:hover {
+  color: #006d35;
+}
+
+.mat-mdc-button.active {
+  color: #004d25; /* Cambia el color del botón cuando el enlace esté activo */
+}
+
+.fade-out {
+  background-color: transparent;
+  transition: background-color 0.3s linear;
+  animation: scale-out-center 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
+
+@keyframes scale-out-center {
+  0% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+}
+
+.sidenav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100px;
+}
+
+.logout-container {
+  margin-top: auto; /* Empuja el botón hacia el fondo */
+  padding: 16px; /* Agrega un pequeño relleno alrededor del botón */
+}
+
+
+.logout-container button {
+  width: 100%;
+  /* background-color: #f44336; */
+  color: #f44336;
+}
+
+.logout-container button:hover {
+  font-weight: bold;
+  background-color: #f7787877;
+}
+
+
+
+

@@ -1,1 +1,19 @@
-<p>toolbar works!</p>,
+<mat-toolbar color="primary">
+  <button (click)="sidenav.toggle()" mat-icon-button color="primary" aria-label="icon-button-menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <picture class="text-gray-200 size-9 flex justify-center items-center">
+    <source srcset="../../../assets/icons/logo.svg" type="image/svg+xml">
+    <img src="../../../assets/icons/logo.svg" alt="Solveria Logo" class="logo">
+  </picture>
+  <div class="flex justify-center items-center ml-4 text-gray-600">
+    <span class="text-2xl font-medium ">Solveria</span>
+  </div>
+
+  <span class="spacer"></span>
+  <button (click)="onLogout()" color="darkbg" aria-label="icon-button-logout">
+    <mat-icon color="accent">logout</mat-icon>
+  </button>
+
+</mat-toolbar>

@@ -1,6 +1,99 @@
-<h1>
-  Dashboard Layout
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+  [mode]="(isHandset$ | async) ? 'over' : 'side'"
+  [opened]="(isHandset$ | async) === false">
 
 
-  <!-- <app-breadcrumbs class="sr-only"></app-breadcrumbs> -->
-</h1>
+  <!-- Contenedor principal que usa Flexbox -->
+  <section class="flex flex-col h-full bg-gray-100">
+    <mat-toolbar class="flex justify-center">
+        <picture class="flex items-center justify-center">
+            <source srcset="assets/icon_proveedor.png" type="image/png">
+            <img src="assets/icon_proveedor.png" alt="Logo" class="size-9">
+        </picture>
+    </mat-toolbar>
+      <nav class="bg-inherit shadow-current smaller-container pt-8 flex-1 overflow-hidden">
+          <!-- Recorre las rutas y genera los ítems del menú -->
+          @for (route of routes; track route.path) {
+              <app-side-menu
+              [descriptions]="route.data!['descriptions']"
+              [icon]="route.data!['icon']"
+              [title]="route.data!['title']"
+              [path]="route.path!"
+              />
+          }
+      </nav>
+
+      <!-- Contenedor del botón Logout -->
+      <div class="logout-container flex-shrink-0">
+        <button mat-button aria-label="Example icon button with a delete icon">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+  </section>
+
+</mat-sidenav>
+
+
+
+  <mat-sidenav-content class="">
+    @if (isHandset$ | async) {
+  <div class="bg-gray-500">
+    <mat-toolbar class="justify-between flex">
+
+      <button
+      type="button"
+      aria-label="Toggle sidenav"
+      mat-icon-button
+      (click)="drawer.toggle()">
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+    <a routerLink="/dashboard/services" mat-button type="button" title="tituloToolbar">
+      <div class="spacer flex items-center content-center justify-center">
+        <mat-icon class="hover:font-bold">
+          keyboard_double_arrow_up
+        </mat-icon>
+        <span class="text-verde text-pretty text-base">CEAP</span>
+      </div>
+    </a>
+
+    <div class="flex flex-shrink-0">
+      <button mat-button aria-label="Example icon button with a delete icon">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+    </mat-toolbar>
+  </div>
+}
+
+
+
+
+    <section class="px-8 sm:p-8">
+
+      <section class="flex justify-between items-center content-center sm:pb-8">
+        <picture class="hidden sm:block">
+          <source srcset="assets/Logo_Inversisa.webp" type="image/webp">
+          <img src="assets/Logo_Inversisa.webp" alt="Logo de Inversisa" class="w-32 sm:w-52">
+        </picture>
+
+        <div class="flex flex-col">
+          <span class="mt-4 text-sm sm:text-lg font-bold text-verde sm:mt-0 sm:text-right hidden sm:block">
+            INVERSISA S.A.S
+          </span>
+          <span class="text-xs sm:text-base hidden sm:block">
+            NIT. 900.403.670-1
+          </span>
+        </div>
+      </section>
+
+      <app-breadcrumbs></app-breadcrumbs>
+
+      <router-outlet/>
+    </section>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+

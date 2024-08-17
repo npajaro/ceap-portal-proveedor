@@ -1,3 +1,64 @@
-:host {
-  display: block;
+.content {
+  height: calc(100% - 98px);
+  overflow-y: auto;
+  border-radius: 10px;
+  margin: 16px;
+  margin-left: 1rem;
+  padding: 10px;
+}
+
+.content::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  border-radius: 8px;
+  background-color: #c6ead762;
+  background-clip: content-box;
+}
+
+.content::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #0a8342;
+  background-clip: content-box;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: #05582c;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+mat-sidenav-container {
+  height: calc(100% - 68px);
+  width: 100%;
+  overflow: hidden;
+}
+
+mat-divider {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.838);
+}
+
+mat-sidenav {
+  /* margin: 16px; */
+  width: 250px;
+  border-right: 1px solid #e0e0e0;
+  /* background-color: inherit; */
+  /* border-radius: 10px; */
+  padding: 0px;
+  text-align: center;
+  /* box-shadow: 0px 0px 3px 0 rgb(0 0 0 / 0.1), 0px 0px 6px 0px rgb(0 0 0 / 0.1); */
+}
+
+mat-toolbar{
+  background: inherit;
+  box-shadow: 4px 4px 3px 0 rgba(37, 36, 36, 0.1), 0px 0px 6px 0px rgb(0 0 0 / 0.1);
+}
+
+.sidebar-content{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-content: flex-start;
+  align-items: stretch;
 }

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivationEnd, Router } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
 
@@ -8,6 +9,7 @@ import { Subscription, filter } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
+    MatIconModule
   ],
   templateUrl: './breadcrumbs.component.html',
   styleUrl: './breadcrumbs.component.css',

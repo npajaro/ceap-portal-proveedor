@@ -1,0 +1,82 @@
+
+::ng-deep .mat-icon:hover, mat-icon.mat-primary:hover, mat-icon.mat-accent:hover, mat-icon.mat-warn:hover {
+  /* background-color: #b2d7b2cb; */
+  /* color: #006d35; */
+  transform: scale(1.05);
+  transition: transform 1.0s ease;
+}
+
+.active-link {
+  background-color: #b2d7b2cb;
+  /* transform: scale(1.05);
+  transition: transform 0.3s ease; */
+}
+
+.active-link-select {
+  background-color: #b2d7b2cb;
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.mat-mdc-button:not(:disabled) {
+  color: #059b4d;
+}
+
+.mat-mdc-button:hover {
+  background-color: #b2d7b2cb;
+  color: #006d35;
+}
+
+.mat-mdc-button.active {
+  color: #006d35; /* Cambia el color del botón cuando el enlace esté activo */
+}
+
+
+.active {
+  background-color: #b2d7b2cb;
+  transform: scale(1.05);
+  color: #006d35;
+}
+
+.mat-mdc-button:not(:disabled) {
+  color: #059b4d;
+}
+
+.mat-mdc-button:hover {
+  color: #006d35;
+}
+
+.mat-mdc-button.active {
+  color: #004d25; /* Cambia el color del botón cuando el enlace esté activo */
+}
+
+.fade-out {
+  background-color: transparent;
+  transition: background-color 0.3s linear;
+  animation: scale-out-center 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
+
+@keyframes scale-out-center {
+  0% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+}
+
+
+
+
+.sidenav {
+  width: 250px; /* Ajusta el ancho según tus necesidades */
+}
+
+
+
+
+
+
+

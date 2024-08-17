@@ -1,5 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenav } from '@angular/material/sidenav';
+
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
@@ -8,9 +12,21 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   imports: [
     CommonModule,
     MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToolbarComponent { }
+export class ToolbarComponent {
+  @Input() sidenav!: MatSidenav;
+
+  onLogout() {
+    // logout logic
+    console.log('logout');
+  }
+
+
+
+}
