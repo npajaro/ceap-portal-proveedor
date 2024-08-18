@@ -25,7 +25,7 @@ export class BreadcrumbsComponent {
   constructor() {
     this.titleSub$ = this.argumentoRuta()
     .subscribe((data) => {
-      this.titleSection = data.snapshot.data['title'];
+      this.titleSection = data.snapshot.data['titleSections'];
       this.icons = data.snapshot.data['icon'];
       // document.title = `Bread - ${this.titleSection}`;
     })
