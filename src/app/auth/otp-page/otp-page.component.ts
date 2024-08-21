@@ -5,6 +5,12 @@ import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { ToastId } from '../../core/interfaces/toast-Id.enum';
 import { MatButtonModule } from '@angular/material/button';
 import { Tercero } from '@interfaces/tercero.interface';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SpinnerService } from '@services/spinner.service';
+import { ApiService } from '@services/api.service';
+import { routes } from '../../app.routes';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-otp-page',
@@ -16,78 +22,67 @@ import { Tercero } from '@interfaces/tercero.interface';
         CommonModule,
         TruncatePipe,
         MatButtonModule,
+        MatInputModule,
+        MatFormFieldModule
     ],
 })
 export class OtpPageComponent {
-  @ViewChild('otpInput1') otpInput1!: ElementRef;
-  @ViewChild('otpInput2') otpInput2!: ElementRef;
-  @ViewChild('otpInput3') otpInput3!: ElementRef;
-  @ViewChild('otpInput4') otpInput4!: ElementRef;
+  @ViewChild('txtTagOtpInput') public tagOTP!: ElementRef<HTMLInputElement>;
 
   private coreSnackbarService   = inject(CoreSnackbarService);
+  private router                = inject(Router);
+  private apiSv                 = inject(ApiService);
   private cdRef                 = inject(ChangeDetectorRef);
-  private ToastId               = ToastId;
+  private spinnerSv             = inject(SpinnerService);
+  private toastId               = ToastId;
+  private lastOTPValue: string  = '';
 
-  public dataTercero: Tercero = localStorage.getItem('tercero') ? JSON.parse(localStorage.getItem('tercero') as string) : {};
+  public dataTercero: Tercero = this.getTerceroFromSessionStorage();
 
-  otp: string[] = ['', '', '', ''];
-  countdown: number = 120;
+  countdown: number = 3;
   isResendDisabled: boolean = true;
   interval: any;
 
   ngOnInit() {
-    // this.startCountdown();
     this.startCountdown();
     console.log(this.dataTercero);
   }
 
-  moveFocus(event: KeyboardEvent, index: number) {
-    const input = event.target as HTMLInputElement;
-    if (input.value.length === 1) {
-      if (index < 3) {
-        const nextInput = input.nextElementSibling as HTMLInputElement;
-        nextInput?.focus();
+  public validateOTP() {
+    const tagOTP = this.tagOTP.nativeElement.value.trim();
+
+    // Verificar si el valor del input ha cambiado
+    if (tagOTP !== this.lastOTPValue) {
+      this.lastOTPValue = tagOTP;
+
+      if (tagOTP.length === 6) {
+        console.warn('El código OTP es correcto', { tagOTP });
+        this.sendOtp(tagOTP);
       }
-    } else if (input.value.length === 0 && event.key === 'Backspace' && index > 0) {
-      const prevInput = input.previousElementSibling as HTMLInputElement;
-      prevInput?.focus();
     }
+    // Actualizar el valor del input sin espacios
+    this.tagOTP.nativeElement.value = tagOTP;
   }
 
-  getOtp() {
-    return [
-      this.otpInput1.nativeElement.value,
-      this.otpInput2.nativeElement.value,
-      this.otpInput3.nativeElement.value,
-      this.otpInput4.nativeElement.value,
-    ].join('');
-  }
+  sendOtp(otp: string) {
+    this.spinnerSv.show();
+    const bodyOtp = this.createOtpBody(otp);
 
-  sendOtp() {
-    if (this.getOtp().length < 4) {
-      this.coreSnackbarService.openSnackbar('Debe ingresar OTP', 'Cerrar', this.ToastId.WARNING);
-      console.log('Debe llenar todos los campos');
-      return;
-    }
-    this.coreSnackbarService.close();
-    // this.startCountdown();
-    console.log('OTP:', this.getOtp());
-  }
-
-  requestNewCode() {
-    this.coreSnackbarService.openSnackbar(`Código OTP reenviado al corrreo ${this.dataTercero.email.toLowerCase()}`, 'Cerrar', this.ToastId.SUCCESS);
-    console.log('¿Estás seguro de que quieres solicitar un nuevo código?');
-    this.resetCountdown();
+    this.apiSv.validarOtp(bodyOtp).subscribe({
+      next: (data) => this.handleOtpSuccess(data),
+      error: (error) => this.handleOtpError(error, 'send')
+    });
   }
 
   resendOtp() {
-    if (this.getOtp().length > 0) {
-      this.coreSnackbarService.openSnackbar('¿Estás seguro de que quieres reenviar el OTP?', 'Reenviar', this.ToastId.SUCCESS);
-      console.log('¿Estás seguro de que quieres reenviar el OTP?');
-      return;
-    }
-    this.coreSnackbarService.close();
-    console.log('Reenviar OTP', this.getOtp());
+    this.spinnerSv.show();
+    const bodyOtp = this.createOtpBody();
+
+    this.apiSv.resendOtp(bodyOtp).subscribe({
+      next: (data) => this.handleResendOtpSuccess(data),
+      error: (error) => this.handleOtpError(error, 'resend')
+    });
+
     this.resetCountdown();
   }
 
@@ -99,15 +94,60 @@ export class OtpPageComponent {
         this.isResendDisabled = false;
         clearInterval(this.interval);
       }
-      this.cdRef.markForCheck(); // Marca el componente para verificar cambios
+      this.cdRef.markForCheck();
     }, 1000);
   }
 
   resetCountdown() {
-    this.countdown = 120;
+    this.countdown = 3;
     this.isResendDisabled = true;
     this.startCountdown();
   }
 
+  private getTerceroFromSessionStorage(): Tercero {
+    const tercero = sessionStorage.getItem('tercero');
+    return tercero ? JSON.parse(tercero) : {};
+  }
+
+  private createOtpBody(otp?: string): any {
+    return {
+      otp: otp,
+      numeroIdentificacion: this.dataTercero?.id || '',
+      captchaToken: this.dataTercero?.captchaToken || '',
+    };
+  }
+
+  private handleOtpSuccess(data: any) {
+    this.spinnerSv.hide();
+    console.log('Código OTP enviado correctamente', data);
+    this.router.navigateByUrl('/dashboard');
+  }
+
+  private handleOtpError(error: any, action: 'send' | 'resend') {
+    this.spinnerSv.hide();
+    if (error.status === 408 || (error.error && error.error.status === 408)) {
+      this.coreSnackbarService.openSnackbar('El token del captcha ha expirado. Por favor, complete el desafío del captcha nuevamente.', 'Cerrar', this.toastId.ERROR);
+      console.error('El token del captcha ha expirado.');
+      this.navigateToLogin();
+    } else {
+      const errorMessage = action === 'send' ? 'Error al enviar el código OTP' : 'Error al reenviar el código OTP';
+      console.error(errorMessage, error);
+      this.coreSnackbarService.openSnackbar(errorMessage, 'Cerrar', this.toastId.ERROR);
+    }
+  }
+
+
+  private handleResendOtpSuccess(data: any) {
+    this.spinnerSv.hide();
+    this.coreSnackbarService.openSnackbar(`Código OTP reenviado al correo ${this.dataTercero.email.toLowerCase()}`, 'Cerrar', this.toastId.SUCCESS);
+    console.log(`Código OTP reenviado al correo ${this.dataTercero.email.toLowerCase()}`, data);
+  }
+
+  private navigateToLogin() {
+    this.router.navigateByUrl("/auth/login");
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  }
 
 }

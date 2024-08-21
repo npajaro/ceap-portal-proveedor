@@ -1,5 +1,7 @@
 export interface Tercero {
-  id_cia: number,
-  razon_social: string,
-  email: string
+  estado: string,
+  name: string,
+  email: string,
+  id?: string
+  captchaToken?: string
 }

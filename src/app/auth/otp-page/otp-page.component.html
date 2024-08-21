@@ -4,31 +4,38 @@
     <img src="assets/icon_proveedor.png" title="Icono CEAP" alt="Logo" loading="lazy" class="w-8 h-auto">
   </picture>
   <div class="py-4">
-    <h1 class="text-xl text-gray-600">{{'HOLA 👋 ' + [(dataTercero.razon_social | truncate: 26) | uppercase] }}</h1>
+    <h1 class="text-xl text-gray-600">{{'HOLA 👋 ' + [(dataTercero.name || 'Sin data' | truncate: 26) | uppercase]}}</h1>
   </div>
   <span class="text-base">Ingresar OTP</span>
 </header>
 
 <section class="pt-2 w-full">
-  <div class="flex justify-center space-x-7 pt-4 pb-2" data-hs-pin-input="">
-    <input #otpInput1 type="text" maxlength="1" (keyup)="moveFocus($event, 0)"
-    class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬" autofocus>
-    <input #otpInput2 type="text" maxlength="1" (keyup)="moveFocus($event, 1)"
-    class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
-    <input #otpInput3 type="text" maxlength="1" (keyup)="moveFocus($event, 2)"
-    class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
-    <input #otpInput4 type="text" maxlength="1" (keyup)="moveFocus($event, 3)"
-    class="block h-14 w-14 text-center bg-gray-200 border-transparent border-solid focus:border-2 rounded-2xl text-2xl focus:border-verde focus:ring-verde disabled:opacity-50 disabled:pointer-events-none" placeholder="⚬">
+  <div class="flex justify-center space-x-7 pt-4 pb-2 w-full" data-hs-pin-input="">
+    <mat-form-field class="w-full">
+      <mat-label>Ingrese OTP</mat-label>
+      <input (input)="validateOTP()" #txtTagOtpInput matInput title="input-Otp" maxlength="6">
+    </mat-form-field>
   </div>
 
   <p class="pt-7 text-pretty text-sm">
-    Se ha enviado un código de verificación a tu correo electrónico. <span class="font-bold">{{dataTercero.email}} </span>
+    Se ha enviado un código de verificación a tu correo electrónico. <span class="font-bold">{{dataTercero.email || 'Sin data' | lowercase}} </span>
     Este correo es el registrado en el sistema, <br>
     Para solicitar un nuevo código, debes esperar {{countdown}} segundos.
   </p>
 
   <div class="flex justify-between items-center pt-8">
-    <button mat-button color="primary" (click)="requestNewCode()" [disabled]="isResendDisabled">Reenviar código</button>
-    <button (click)="sendOtp()" mat-flat-button color="primary" type="submit">Siguiente</button>
+    <div [ngClass]="{
+      'cursor-not-allowed': isResendDisabled,
+    }">
+      <button mat-button color="primary" (click)="resendOtp()" [disabled]="isResendDisabled">Reenviar código</button>
+    </div>
+
+    <div [ngClass]="{
+      ' cursor-not-allowed': txtTagOtpInput.value.length < 6,
+    }">
+      <button (click)="validateOTP()" mat-flat-button color="primary" type="submit"
+      [disabled]="txtTagOtpInput.value.length < 6"
+      >Siguiente</button>
+    </div>
   </div>
 </section>
