@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 declare global {
   interface Window {
@@ -14,49 +14,44 @@ declare global {
     CommonModule,
   ],
   template: `
-   					<!-- <div
-						class="cf-turnstile"
-						data-sitekey="0x4AAAAAAAevxgekk8WbuO2S"
-						data-callback="javascriptCallback"
-						data-theme="light"
-						data-language="es"
-					></div> -->
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAAevxgekk8WbuO2S" data-callback="onTurnstileSuccess" data-theme="light"></div>
+  <div
+    class="cf-turnstile"
+    data-sitekey="0x4AAAAAAAevxgekk8WbuO2S"
+    data-callback="onTurnstileSuccess"
+    data-theme="light">
+  </div>
   `,
   styles: [
-    `.cf-turnstile { margin: 0px 0; }`
+    `.cf-turnstile {
+      margin: 0px 0;
+      aspect-ratio: 298/63;
+      }`
   ],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CaptchaTurnstileComponent implements AfterViewInit{
+export class CaptchaTurnstileComponent {
   @Output() tokenReceived = new EventEmitter<string>();
 
-  ngAfterViewInit(): void {
-    this.loadScript();
-    // console.log('ngAfterViewInit')
+  constructor() {
+    this.loadScript()
   }
 
   private loadScript() {
     const script = document.createElement('script');
     script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-    script.async = false;
-    script.defer = false;
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
     script.onload = () => {
       this.initializeTurnstile();
-    };
-    document.body.appendChild(script);
+    }
   }
 
   private initializeTurnstile() {
-    (window as any).onTurnstileSuccess = (token: string) => {
+    window.onTurnstileSuccess = (token: string) => {
       this.tokenReceived.emit(token);
     };
   }
 
-  // ngAfterViewInit(): void {
-  //   (window as any).onTurnstileSuccess = (token: string) => {
-  //     this.tokenReceived.emit(token);
-  //   };
-  // }
 }
 
