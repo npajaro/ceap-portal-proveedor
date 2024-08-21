@@ -18,7 +18,7 @@ export const DASHBOARD_ROUTES: Routes = [
       //   ]
       // },
       { path: 'certificado-retencion', loadComponent: () => import('./pages/certificado-retencion/certificado-retencion.component'),
-        data: { title: 'Certificado', titleSections: 'Certificado tributarios' , icon: 'receipt_long', description: 'CertificadoButton' }
+        data: { title: 'Certificados', titleSections: 'Certificados tributarios' , icon: 'receipt_long', description: 'CertificadoButton' }
       },
       { path: 'pagos-recibidos', loadComponent: () => import('./pages/pagos-recibidos/pagos-recibidos.component'),
         data: { title: 'Pagos', titleSections: 'Relación de pagos', icon: 'currency_exchange', description: 'PagosRecibidosButton' }
