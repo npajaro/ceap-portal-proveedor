@@ -10,7 +10,12 @@ export class CoreSnackbarService {
 
   private _snackBar = inject(MatSnackBar);
 
-  openSnackbar(message: string, action: string, toastId: ToastId) {
+  openSnackbar(message: string, action: string, toastId: ToastId, options?: {
+    duration?: number,
+    panelClass?: string[],
+    verticalPosition?: 'top' | 'bottom',
+    horizontalPosition?: 'start' | 'center' | 'end' | 'left' | 'right'
+  }) {
     this.toastId = toastId;
     this._snackBar.openFromComponent(CustomSnackbarComponent, {
       data: {
@@ -20,10 +25,10 @@ export class CoreSnackbarService {
         type: toastId,
         snackBar: this._snackBar
       },
-      panelClass: [`${toastId}-snackbar`],
-      // duration: 9000,
-      verticalPosition: 'bottom',
-      horizontalPosition: 'left'
+      panelClass: options?.panelClass || [`${toastId}-snackbar`],
+      duration: options?.duration || 10000, // Duración predeterminada de 3000 ms (3 segundos)
+      verticalPosition: options?.verticalPosition || 'bottom',
+      horizontalPosition: options?.horizontalPosition || 'left'
     });
   }
 
