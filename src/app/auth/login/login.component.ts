@@ -38,6 +38,7 @@ import { ModalActualizarDocumentosComponent } from '@auth/components/modal-actua
 ]
 })
 export class LoginComponent implements OnInit {
+
   private fb                    = inject(FormBuilder);
   private router                = inject(Router);
   private validatorsSv          = inject(ValidatorsService);
@@ -47,7 +48,6 @@ export class LoginComponent implements OnInit {
   private dialog                = inject(MatDialog);
   private ToastId               = ToastId;
 
-  public tercero!: Tercero;
   public turnstileToken!: string;
 
   public loginForm: FormGroup = this.fb.group({
@@ -58,36 +58,43 @@ export class LoginComponent implements OnInit {
     this.loginForm.reset();
   }
 
-
   onTokenReceived(token: string) {
     this.turnstileToken = token;
+    console.log({ token });
+  }
+
+  // Métodos de validación del formulario
+  public isValidField(field: string): boolean | null {
+    return this.validatorsSv.isValidField(this.loginForm, field);
+  }
+
+  public getFieldError(field: string): string | null {
+    return this.validatorsSv.getFieldError(this.loginForm, field);
   }
 
 
-  public isValidField ( field: string) {
-    return this.validatorsSv.isValidField( this.loginForm, field)
-  }
-
-  public getFieldError( field: string ) {
-    return this.validatorsSv.getFieldError(this.loginForm, field)
-  }
-
-  public login() {
+  // Métodos de autenticación
+  public login(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
-    const nit = this.loginForm.get('numberNit')?.value || '';
-    this.getTercero(nit)
+    this.checkIdentity(this.loginForm.get('numberNit')?.value || '');
   }
 
-  public getTercero( nit: string) {
+  public checkIdentity( nit: string) {
     this.spinnerSv.show();
-    if (this.turnstileToken) {
-      console.log('Turnstile Token:', this.turnstileToken);
-    } else {
-      this.coreSnackbarService.openSnackbar('Captcha no resuelto', 'Cerrar', ToastId.ERROR);
-      console.error('Captcha no resuelto');
+    const bodyTercero = {
+      captchaToken: this.turnstileToken,
+      numeroIdentificacion: nit
+    };
+    if (!this.turnstileToken) {
+      this.coreSnackbarService.openSnackbar('Captcha no resuelto, vamos a recargar la pagina', 'Cerrar', ToastId.ERROR);
+      console.error('Captcha no resuelto, vamos a recargar la pagina');
+      //* refrescar la pagina enseguida.
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000 )
       return;
     }
 
@@ -95,47 +102,45 @@ export class LoginComponent implements OnInit {
       console.error('El nit no puede estar vacio');
       return;
     }
-    this.apiSv.getTercero(nit).subscribe({
+    this.apiSv.checkIdentity(bodyTercero).subscribe({
       next: (data) => {
-        this.tercero = data;
-        localStorage.setItem('tercero', JSON.stringify(this.tercero));
-        // console.log('Tercero:', this.tercero);
+        const tercero: Tercero = {
+          ...data,
+          id: bodyTercero.numeroIdentificacion || '',
+          captchaToken: bodyTercero.captchaToken || '',
+        }
+        sessionStorage.setItem('tercero', JSON.stringify(tercero));
         this.spinnerSv.hide();
-        console.log('navego')
-        // this.router.navigate(['/auth/otp-validators'])
         this.router.navigateByUrl('/auth/otp-validators');
         this.coreSnackbarService.close();
       },
       error: (error) => {
         this.loginForm.get('numberNit')?.setErrors({ invalidNit: 'true' });
-        this.coreSnackbarService.openSnackbar('Error al obtener tercero', 'Cerrar', ToastId.ERROR);
-        console.log('Error:', error);
+        this.coreSnackbarService.openSnackbar('Error al obtener tercero', 'Cerrar', ToastId.ERROR, {});
+        console.error('Error:', error);
         this.spinnerSv.hide();
       }
     });
   }
 
-  // abril modal para actualizar documentos de tercero
-  public openModal() {
-    const AbrilModal = {
+  //* Método para abrir modal
+  public openModal(): void {
+    const modalConfig = {
       width: '35vw',
       maxWidth: '50vw',
       height: 'auto',
       enterAnimationDuration: 300,
       exitAnimationDuration: 300,
-      // autoFocus: false,
-    }
-
-    const dialogRef = this.dialog.open(ModalActualizarDocumentosComponent, AbrilModal);
+    };
+    const dialogRef = this.dialog.open(ModalActualizarDocumentosComponent, modalConfig);
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
           console.log('The dialog was closed');
         }
         console.log('The dialog was closed');
-      }
+      },
     });
   }
-
 
 }
