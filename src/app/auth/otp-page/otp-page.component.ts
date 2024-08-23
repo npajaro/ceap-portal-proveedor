@@ -32,7 +32,6 @@ export class OtpPageComponent {
 
   private coreSnackbarService   = inject(CoreSnackbarService);
   private router                = inject(Router);
-  private apiSv                 = inject(ApiService);
   private authSv                = inject(AuthService);
   private cdRef                 = inject(ChangeDetectorRef);
   private spinnerSv             = inject(SpinnerService);
@@ -80,7 +79,7 @@ export class OtpPageComponent {
     this.spinnerSv.show();
     const bodyOtp = this.createOtpBody();
 
-    this.apiSv.resendOtp(bodyOtp).subscribe({
+    this.authSv.resendOtp(bodyOtp).subscribe({
       next: (data) => this.handleResendOtpSuccess(data),
       error: (error) => this.handleOtpError(error, 'resend')
     });
@@ -127,18 +126,26 @@ export class OtpPageComponent {
 
   private handleOtpError(error: any, action: 'send' | 'resend') {
     this.spinnerSv.hide();
-    console.log(error)
-    if (error.status === 408 || (error && error.coidgo === '408')) {
-      this.coreSnackbarService.openSnackbar('El token del captcha ha expirado. Por favor, complete el desafío del captcha nuevamente.', 'Cerrar', this.toastId.ERROR);
-      console.error('El token del captcha ha expirado.');
+
+    const errorCode = error.status || error.codigo || (error.error && error.error.codigo);
+    const errorMessage = this.getErrorMessage(errorCode, action);
+
+    this.coreSnackbarService.openSnackbar(errorMessage, 'Cerrar', this.toastId.ERROR);
+    console.error(errorMessage, error);
+
+    if (errorCode === '408') {
       this.navigateToLogin();
-    } else if (error && error.codigo === '409' ) {
-      this.coreSnackbarService.openSnackbar('Código OTP inválido', 'Cerrar', this.toastId.ERROR);
-      console.error('Código OTP inválido', error);
-    } else {
-      const errorMessage = action === 'send' ? 'Error al enviar el código OTP' : 'Error al reenviar el código OTP';
-      console.error(errorMessage, error);
-      this.coreSnackbarService.openSnackbar(errorMessage, 'Cerrar', this.toastId.ERROR);
+    }
+  }
+
+  private getErrorMessage(errorCode: string, action: 'send' | 'resend'): string {
+    switch (errorCode) {
+      case '408':
+        return 'El token del captcha ha expirado. Por favor, complete el desafío del captcha nuevamente.';
+      case '409':
+        return action === 'send' ? 'Código OTP inválido' : 'Espera unos segundos para volver a reenviar el código';
+      default:
+        return action === 'send' ? 'Error al enviar el código OTP' : 'Error al reenviar el código OTP';
     }
   }
 

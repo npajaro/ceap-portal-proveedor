@@ -38,12 +38,12 @@ export class ApiService {
   //   return this.http.post<Tercero>(url, body)
   // }
 
-  public resendOtp(body: { captchaToken: string,  numeroIdentificacion: string  }) {
-    const url = `${this.apiUrl}/api/public/tercero/resend-otp`;
-    console.log(body)
+  // public resendOtp(body: { captchaToken: string,  numeroIdentificacion: string  }) {
+  //   const url = `${this.apiUrl}/api/public/tercero/resend-otp`;
+  //   console.log(body)
 
-    return this.http.post<Tercero>(url, body)
-  }
+  //   return this.http.post<Tercero>(url, body)
+  // }
 
 
   // public validarOtp(body: { otp: string,  numeroIdentificacion: string  }): Observable<Tercero> {

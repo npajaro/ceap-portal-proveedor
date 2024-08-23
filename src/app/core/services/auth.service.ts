@@ -44,7 +44,14 @@ export class AuthService {
 
   public checkIdentity(body: { captchaToken: string,  numeroIdentificacion: string  }): Observable<Tercero> {
     const url = `${this.apiUrl}/api/public/tercero/identity-document`;
-    console.log(body)
+    // console.log(body)
+
+    return this.http.post<Tercero>(url, body)
+  }
+
+  public resendOtp(body: { captchaToken: string,  numeroIdentificacion: string  }) {
+    const url = `${this.apiUrl}/api/public/tercero/resend-otp`;
+    // console.log(body)
 
     return this.http.post<Tercero>(url, body)
   }
