@@ -60,25 +60,25 @@ mat-icon {
   height: 1.5rem !important;
 }
 
-.active {
+/* .active {
   background-color: #b2d7b2cb;
   color: #006d35;
-}
+} */
 
-::ng-deep .mat-icon:hover, mat-icon.mat-primary:hover, mat-icon.mat-accent:hover, mat-icon.mat-warn:hover {
-  /* background-color: #b2d7b2cb; */
-  /* color: #006d35; */
+/* ::ng-deep .mat-icon:hover, mat-icon.mat-primary:hover, mat-icon.mat-accent:hover, mat-icon.mat-warn:hover {
+  background-color: #b2d7b2cb;
+  color: #006d35;
   transform: scale(1.05);
   transition: transform 1.0s ease;
-}
+} */
 
-.active-link {
+/* .active-link {
   background-color: #b2d7b2cb;
-  /* transform: scale(1.05);
-  transition: transform 0.3s ease; */
-}
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+} */
 
-.active-link-select {
+/* .active-link-select {
   background-color: #b2d7b2cb;
   transform: scale(1.05);
   transition: transform 0.3s ease;
@@ -94,8 +94,8 @@ mat-icon {
 }
 
 .mat-mdc-button.active {
-  color: #006d35; /* Cambia el color del botón cuando el enlace esté activo */
-}
+  color: #006d35;
+} */
 
 /* ::ng-deep .mat-toolbar-row, .mat-toolbar-single-row {
   padding: 0px !important;
@@ -103,20 +103,20 @@ mat-icon {
 
 
 
-
+/*
 .hover\:scale-105 {
-  transition: transform 0.3s ease; /* Añade una transición suave */
+  transition: transform 0.3s ease;
 }
 
 .hover\:scale-105:hover {
-  transform: scale(1.05); /* Escala el elemento al 105% cuando se pasa el cursor sobre él */
-}
+  transform: scale(1.05);
+} */
 
-.active {
+/* .active {
   background-color: #b2d7b2cb;
   transform: scale(1.05);
-}
-
+} */
+/*
 .mat-mdc-button:not(:disabled) {
   color: #059b4d;
 }
@@ -126,10 +126,10 @@ mat-icon {
 }
 
 .mat-mdc-button.active {
-  color: #004d25; /* Cambia el color del botón cuando el enlace esté activo */
-}
+  color: #004d25;
+} */
 
-.fade-out {
+/* .fade-out {
   background-color: transparent;
   transition: background-color 0.3s linear;
   animation: scale-out-center 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
@@ -144,7 +144,7 @@ mat-icon {
     transform: scale(1);
     opacity: 0.9;
   }
-}
+} */
 
 .sidenav {
   display: flex;
@@ -162,13 +162,13 @@ mat-icon {
 .logout-container button {
   width: 100%;
   /* background-color: #f44336; */
-  color: #f44336;
+  /* color: #f44336; */
 }
 
-.logout-container button:hover {
+/* .logout-container button:hover {
   font-weight: bold;
   background-color: #f7787877;
-}
+} */
 
 
 

@@ -5,7 +5,7 @@
       <div class="grid w-full">
         <mat-form-field appearance="fill">
           <mat-label>Seleccione certificado</mat-label>
-          <mat-select>
+          <mat-select (valueChange)="onChangeValue($event)">
             @for (item of certificados; track $index) {
               <mat-option [value]="item.value">{{ item.name }}</mat-option>
             }

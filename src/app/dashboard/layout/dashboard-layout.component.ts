@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, signal, ViewChild } from '@angular/core';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -12,6 +12,8 @@ import { SideMenuComponent } from "../components/side-menu/side-menu.component";
 import { DASHBOARD_ROUTES } from 'src/app/dashboard/dashboard.routes';
 import {MatMenuModule} from '@angular/material/menu';
 import { BreadcrumbsComponent } from "../components/breadcrumbs/breadcrumbs.component";
+import { CoreDialogService } from '@services/core-dialog.service';
+import { AuthService } from '@services/auth.service';
 
 interface MenuItem {
   label: string;
@@ -48,9 +50,12 @@ export class DashboardLayoutComponent {
   @ViewChild('subDrawer') subDrawer!: MatSidenav;
   public routes = DASHBOARD_ROUTES[0].children?.filter((route) => route.data);
 
-
+  private coreDialogSv       = inject(CoreDialogService);
+  private authSv             = inject(AuthService);
   private breakpointObserver = inject(BreakpointObserver);
   isActive = false;
+
+  public currentUser = computed(() => this.authSv.currentUser());
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -92,8 +97,26 @@ export class DashboardLayoutComponent {
   }
 
   logout() {
-    // Lógica de logout
-    console.log('logout')
+    const dialog = this.coreDialogSv.openDialogAlert(
+      'Cerrar sesión',
+      '¿Está seguro que desea cerrar sesión?',
+      'logout',
+      'amarillo',
+      'Cerrar sesión',
+      'Cancelar'
+    );
+    dialog.afterClosed().subscribe(result => {
+      if (result) {
+        this.doLogout();
+      }
+    })
+  }
+
+  doLogout() {
+    this.authSv.logout();
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   }
 
  }

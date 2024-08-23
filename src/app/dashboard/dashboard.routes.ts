@@ -6,17 +6,6 @@ export const DASHBOARD_ROUTES: Routes = [
     path: '',
     component: DashboardLayoutComponent,
     children: [
-      // {
-      //   path: 'services',
-      //   loadComponent: () => import('./pages/services-page/services.component'),
-      //   data: { title: 'Services', icon: 'storage', description: 'Servicios de proveedores' },
-      //   children: [
-      //     { path: 'certificado-retencion', loadComponent: () => import('./pages/certificado-retencion/certificado-retencion.component'),
-      //       data: { title: 'Certificado de Retención', icon: 'receipt_long', description: 'CertificadoButton' } },
-      //     { path: 'pagos-recibidos', loadComponent: () => import('./pages/pagos-recibidos/pagos-recibidos.component'),
-      //       data: { title: 'Pagos Recibidos', icon: 'add', description: 'PagosRecibidosButton' } },
-      //   ]
-      // },
       { path: 'certificado-retencion', loadComponent: () => import('./pages/certificado-retencion/certificado-retencion.component'),
         data: { title: 'Certificados', titleSections: 'Certificados tributarios' , icon: 'receipt_long', description: 'CertificadoButton' }
       },

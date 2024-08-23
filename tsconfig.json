@@ -31,7 +31,7 @@
       "@services/*": ["src/app/core/services/*"],
       "@interfaces/*": ["src/app/core/interfaces/*"],
       "@guards/*": ["src/app/core/guards/*"],
-      // "@shared/*": ["src/app/shared/*"],
+      "@shared/*": ["src/app/shared/*"],
       "@pipes/*": ["src/app/shared/pipes/*"],
       "@auth/*": ["src/app/auth/*"],
       // "@modules/*": ["src/app/modules/*"],

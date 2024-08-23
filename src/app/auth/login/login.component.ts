@@ -18,6 +18,7 @@ import { SpinnerService } from '@services/spinner.service';
 import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { CaptchaTurnstileComponent } from '../../shared/components/captcha-turnstile/captcha-turnstile.component';
 import { ModalActualizarDocumentosComponent } from '@auth/components/modal-actualizar-documentos/modal-actualizar-documentos.component';
+import { AuthService } from '@services/auth.service';
 
 
 @Component({
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit {
   private fb                    = inject(FormBuilder);
   private router                = inject(Router);
   private validatorsSv          = inject(ValidatorsService);
-  private apiSv                 = inject(ApiService);
+  private authSv                 = inject(AuthService);
   private spinnerSv             = inject(SpinnerService);
   private coreSnackbarService   = inject(CoreSnackbarService);
   private dialog                = inject(MatDialog);
@@ -102,7 +103,7 @@ export class LoginComponent implements OnInit {
       console.error('El nit no puede estar vacio');
       return;
     }
-    this.apiSv.checkIdentity(bodyTercero).subscribe({
+    this.authSv.checkIdentity(bodyTercero).subscribe({
       next: (data) => {
         const tercero: Tercero = {
           ...data,

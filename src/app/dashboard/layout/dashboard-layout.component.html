@@ -27,7 +27,7 @@
 
       <!-- Contenedor del botón Logout -->
       <div class="logout-container flex-shrink-0">
-        <button mat-button aria-label="Example icon button with a delete icon">
+        <button color="warn" (click)="logout()" mat-button aria-label="Example icon button with a delete icon">
           <mat-icon>logout</mat-icon>
         </button>
       </div>
@@ -58,8 +58,8 @@
       </div>
     </a>
 
-    <div class="flex flex-shrink-0">
-      <button mat-button aria-label="Example icon button with a delete icon">
+    <div class="flex flex-shrink-0 logout-toolbar">
+      <button color="warn" (click)="logout()" mat-button aria-label="Example icon button with a delete icon">
         <mat-icon>logout</mat-icon>
       </button>
     </div>
@@ -82,8 +82,8 @@
           <span class="mt-4 text-sm sm:text-lg font-bold text-verde sm:mt-0 sm:text-right hidden sm:block">
             INVERSISA S.A.S
           </span>
-          <span class="text-xs sm:text-base hidden sm:block">
-            NIT. 900.403.670-1
+          <span class="text-right text-xs sm:text-xs hidden sm:block">
+            900.403.670-1
           </span>
         </div>
       </section>

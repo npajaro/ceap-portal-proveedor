@@ -1,7 +1,7 @@
 
 ::ng-deep .mat-icon:hover, mat-icon.mat-primary:hover, mat-icon.mat-accent:hover, mat-icon.mat-warn:hover {
-  /* background-color: #b2d7b2cb; */
-  /* color: #006d35; */
+  /* background-color: #b2d7b2cb;
+  color: #006d35; */
   transform: scale(1.05);
   transition: transform 1.0s ease;
 }

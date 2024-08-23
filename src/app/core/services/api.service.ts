@@ -31,12 +31,12 @@ export class ApiService {
   // }
 
 
-  public checkIdentity(body: { captchaToken: string,  numeroIdentificacion: string  }): Observable<Tercero> {
-    const url = `${this.apiUrl}/api/public/tercero/identity-document`;
-    console.log(body)
+  // public checkIdentity(body: { captchaToken: string,  numeroIdentificacion: string  }): Observable<Tercero> {
+  //   const url = `${this.apiUrl}/api/public/tercero/identity-document`;
+  //   console.log(body)
 
-    return this.http.post<Tercero>(url, body)
-  }
+  //   return this.http.post<Tercero>(url, body)
+  // }
 
   public resendOtp(body: { captchaToken: string,  numeroIdentificacion: string  }) {
     const url = `${this.apiUrl}/api/public/tercero/resend-otp`;
@@ -46,12 +46,12 @@ export class ApiService {
   }
 
 
-  public validarOtp(body: { otp: string,  numeroIdentificacion: string  }): Observable<Tercero> {
-    const url = `${this.apiUrl}/api/public/tercero/validar-otp`;
-    console.log(body)
+  // public validarOtp(body: { otp: string,  numeroIdentificacion: string  }): Observable<Tercero> {
+  //   const url = `${this.apiUrl}/api/public/tercero/validar-otp`;
+  //   console.log(body)
 
-    return this.http.post<Tercero>(url, body)
-  }
+  //   return this.http.post<Tercero>(url, body)
+  // }
 
 
 

@@ -49,15 +49,18 @@
       <mat-icon>
         {{icons}}
       </mat-icon>
-      <span class="items-center content-center flex">
+      <span class="items-center content-center flex text-gray-600">
         {{titleSection}}
       </span>
     </div>
   </div>
 
   <div class="flex flex-col">
-    <span class="text-xs sm:text-base font-bold text-verde">
-      {{ "DIGITALGEX S.A.S"}}
+    <span class="text-xs sm:text-base font-bold text-gray-600">
+      {{ currentUser?.name || 'Sin Name' }}
+    </span>
+    <span class="text-right text-xs sm:text-sm font-bold text-gray-950/55">
+      {{ currentUser?.id || 'Sin Email' }}
     </span>
   </div>
 

@@ -1,20 +1,26 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { ActivationEnd, Router, RouterOutlet } from '@angular/router';
+import { AuthService } from '@services/auth.service';
 import { Subscription, filter } from 'rxjs';
+import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, LoadingSpinnerComponent, MatProgressBarModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnDestroy {
   private router = inject(Router);
+  title = ''
 
   public titleSub$!: Subscription;
+
+  private authService = inject(AuthService);
 
   constructor() {
     this.titleSub$ = this.argumentoRuta()

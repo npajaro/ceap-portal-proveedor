@@ -13,6 +13,8 @@ export const AUTH_ROUTES: Routes = [
       {path: 'login', component: LoginComponent, data: { title: 'Login', icon: 'login' }},
       {path: 'otp-validators', component: OtpPageComponent, data: { title: 'OTP-Validators', icon: 'pin'}},
       {path: 'register', component: RegisterComponent, data: { title: 'Register', icon: 'how_to_reg' }},
+      // { path: '', redirectTo: 'login', pathMatch: 'full' },
+      // { path: '**', redirectTo: 'login', pathMatch: 'full' }
     ]
   }
 ]

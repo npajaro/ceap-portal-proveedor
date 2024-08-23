@@ -11,6 +11,7 @@ import { SpinnerService } from '@services/spinner.service';
 import { ApiService } from '@services/api.service';
 import { routes } from '../../app.routes';
 import { Router } from '@angular/router';
+import { AuthService } from '@services/auth.service';
 
 @Component({
     selector: 'app-otp-page',
@@ -32,6 +33,7 @@ export class OtpPageComponent {
   private coreSnackbarService   = inject(CoreSnackbarService);
   private router                = inject(Router);
   private apiSv                 = inject(ApiService);
+  private authSv                = inject(AuthService);
   private cdRef                 = inject(ChangeDetectorRef);
   private spinnerSv             = inject(SpinnerService);
   private toastId               = ToastId;
@@ -68,7 +70,7 @@ export class OtpPageComponent {
     this.spinnerSv.show();
     const bodyOtp = this.createOtpBody(otp);
 
-    this.apiSv.validarOtp(bodyOtp).subscribe({
+    this.authSv.login(bodyOtp).subscribe({
       next: (data) => this.handleOtpSuccess(data),
       error: (error) => this.handleOtpError(error, 'send')
     });
@@ -125,10 +127,14 @@ export class OtpPageComponent {
 
   private handleOtpError(error: any, action: 'send' | 'resend') {
     this.spinnerSv.hide();
-    if (error.status === 408 || (error.error && error.error.status === 408)) {
+    console.log(error)
+    if (error.status === 408 || (error && error.coidgo === '408')) {
       this.coreSnackbarService.openSnackbar('El token del captcha ha expirado. Por favor, complete el desafío del captcha nuevamente.', 'Cerrar', this.toastId.ERROR);
       console.error('El token del captcha ha expirado.');
       this.navigateToLogin();
+    } else if (error && error.codigo === '409' ) {
+      this.coreSnackbarService.openSnackbar('Código OTP inválido', 'Cerrar', this.toastId.ERROR);
+      console.error('Código OTP inválido', error);
     } else {
       const errorMessage = action === 'send' ? 'Error al enviar el código OTP' : 'Error al reenviar el código OTP';
       console.error(errorMessage, error);

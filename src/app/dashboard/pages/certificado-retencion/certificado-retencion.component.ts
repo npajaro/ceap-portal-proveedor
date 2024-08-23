@@ -80,9 +80,9 @@ export default class CertificadoRetencionComponent implements OnInit {
 
 
   certificados = [
-    { name: 'Certificado Anual De Renta', value: '1,4,5' },
-    { name: 'Certificado Anual De ICA', value: '3' },
-    { name: 'Certificado Bimestral De ICA', value: '3' },
+    { name: 'Certificado Anual De Renta', termino: '1,4,5', value: '1,4,5' },
+    { name: 'Certificado Anual De ICA', termino: '3', value: '3A' },
+    { name: 'Certificado Bimestral De ICA', termino: '3', value: '3B' },
   ];
 
 
@@ -124,7 +124,7 @@ export default class CertificadoRetencionComponent implements OnInit {
       const year = currentYear - i;
       this.years.push({
         name: `${year}`,
-        value: `${year}0101 - ${year}1231`
+        value: `${year}0101-${year}1231`
       });
     }
   }

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivationEnd, Router } from '@angular/router';
+import { AuthService } from '@services/auth.service';
 import { Subscription, filter } from 'rxjs';
 
 @Component({
@@ -17,6 +18,9 @@ import { Subscription, filter } from 'rxjs';
 })
 export class BreadcrumbsComponent {
   private router = inject(Router);
+  private authSv = inject(AuthService);
+
+  public currentUser = this.authSv.currentUser()
 
   public titleSection: string = '';
   public titleSub$!: Subscription;
