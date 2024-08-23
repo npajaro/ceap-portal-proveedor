@@ -28,6 +28,8 @@ export class ValidatorsService {
           return `Este campo debe tener al menos ${errors['minlength'].requiredLength} caracteres`;
         case 'maxlength':
           return `Este campo debe tener como máximo ${errors['maxlength'].requiredLength} caracteres`;
+        case 'invalidNit':
+          return 'Error en este campo';
         case 'pattern':
             if ( field === 'email' ) {
               return 'El formato del correo es incorrecto.';
