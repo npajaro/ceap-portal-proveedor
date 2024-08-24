@@ -13,7 +13,7 @@
 <form class="pt-6 w-full" [formGroup]="loginForm" autocomplete="on">
   <mat-form-field appearance="fill" class="w-full pb-2">
     <mat-label>Ingrese Nit</mat-label>
-    <input type="text" matInput title="Número de Identificación Tributaria" formControlName="numberNit" id="numberNit" />
+    <input type="tel" pattern="\d*" (input)="onInput($event)" matInput title="Número de Identificación Tributaria" formControlName="numberNit" id="numberNit" maxlength="10"/>
     @if (isValidField('numberNit')) {
       <mat-error class="font-semibold">
         <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

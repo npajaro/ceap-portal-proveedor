@@ -27,8 +27,8 @@ import { CaptchaTurnstileComponent } from '@shared/components/captcha-turnstile/
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    CaptchaTurnstileComponent
-],
+    CaptchaTurnstileComponent,
+    ],
 })
 export class OtpPageComponent {
   @ViewChild('txtTagOtpInput') public tagOTP!: ElementRef<HTMLInputElement>;
@@ -51,6 +51,15 @@ export class OtpPageComponent {
   ngOnInit() {
     this.startCountdown();
     console.log(this.dataTercero);
+  }
+
+  handleInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    // Remover cualquier carácter que no sea un número
+    input.value = input.value.replace(/[^0-9]/g, '');
+
+    // Llama a la función validateOTP después de filtrar los caracteres
+    this.validateOTP();
   }
 
   onTokenReceived(token: string) {
@@ -174,6 +183,13 @@ export class OtpPageComponent {
     setTimeout(() => {
       window.location.reload();
     }, 100);
+  }
+
+  public onlyNumbers(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
   }
 
 }

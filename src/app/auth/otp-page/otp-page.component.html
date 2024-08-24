@@ -13,7 +13,7 @@
   <div class="flex justify-center space-x-7 pt-4 pb-2 w-full" data-hs-pin-input="">
     <mat-form-field class="w-full">
       <mat-label>Ingrese OTP</mat-label>
-      <input (input)="validateOTP()" #txtTagOtpInput matInput title="Código OTP" maxlength="6">
+      <input type="tel" pattern="\d*" (input)="handleInput($event)" #txtTagOtpInput matInput title="Código OTP" maxlength="6">
     </mat-form-field>
   </div>
 

@@ -21,6 +21,7 @@ import { ModalActualizarDocumentosComponent } from '@auth/components/modal-actua
 import { AuthService } from '@services/auth.service';
 
 
+
 @Component({
     selector: 'app-login',
     standalone: true,
@@ -35,7 +36,7 @@ import { AuthService } from '@services/auth.service';
     FormsModule,
     ReactiveFormsModule,
     MatProgressBarModule,
-    CaptchaTurnstileComponent
+    CaptchaTurnstileComponent,
 ]
 })
 export class LoginComponent implements OnInit {
@@ -54,6 +55,12 @@ export class LoginComponent implements OnInit {
   public loginForm: FormGroup = this.fb.group({
     numberNit: [ '', [Validators.required, Validators.minLength(6), Validators.maxLength(10)] ],
   })
+
+  onInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    // Remover cualquier caracter que no sea un número
+    input.value = input.value.replace(/[^0-9]/g, '');
+  }
 
   ngOnInit(): void {
     this.loginForm.reset();
