@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
@@ -7,6 +9,9 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import {MatCardModule} from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { map } from 'rxjs';
 
 export interface Certificado {
   id: string;
@@ -64,6 +69,9 @@ const NAMES: string[] = [
     MatFormFieldModule,
     MatSelectModule,
     MatPaginatorModule,
+    MatIconModule,
+    MatCardModule,
+    MatButtonModule,
     MatIconModule
   ],
   templateUrl: './certificado-retencion.component.html',
@@ -71,19 +79,67 @@ const NAMES: string[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CertificadoRetencionComponent implements OnInit {
-
   displayedColumns: string[] = ['id', 'tipoCertificado', 'ano', 'periodo', 'actions'];
   dataSource = new MatTableDataSource<Certificado>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  private breakpointObserver = inject(BreakpointObserver);
+  private isMobile$ = this.breakpointObserver
+  .observe(Breakpoints.XSmall)
+  .pipe(
+    map(resul => resul.matches)
+  );
+
+  isMobile = toSignal(this.isMobile$, {initialValue: false} )
+
+
+
+  reporCertificados: Certificado[] = [
+    {
+      id: "1",
+      tipoCertificado: "Certificado Anual De Renta",
+      ano: "2021",
+      periodo: "Anual - 2021",
+      actions: "Descargar"
+    },
+    {
+      id: "2",
+      tipoCertificado: "Certificado Anual De Renta",
+      ano: "2020",
+      periodo: "Anual - 2020",
+      actions: "Descargar"
+    },
+    {
+      id: "3",
+      tipoCertificado: "Certificado Bimestral De ICA",
+      ano: "2021",
+      periodo: "ENE-FEB",
+      actions: "Descargar"
+    },
+    {
+      id: "4",
+      tipoCertificado: "Certificado Anual De Renta",
+      ano: "2019",
+      periodo: "Anual - 2019",
+      actions: "Descargar"
+    },
+    {
+      id: "5",
+      tipoCertificado: "Certificado Anual De Renta",
+      ano: "2018",
+      periodo: "Anual - 2018",
+      actions: "Descargar"
+    }
+  ];
 
   certificados = [
     { name: 'Certificado Anual De Renta', termino: '1,4,5', value: '1,4,5' },
     { name: 'Certificado Anual De ICA', termino: '3', value: '3A' },
     { name: 'Certificado Bimestral De ICA', termino: '3', value: '3B' },
   ];
+
 
 
 
