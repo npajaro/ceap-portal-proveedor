@@ -2,5 +2,8 @@
 <mat-dialog-content>{{data.message}}</mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button color="warn" (click)="closeDialog()" >{{data.confirmButtonText}}</button>
-  <button mat-button mat-dialog-close cdkFocusInitial>{{data.cancelButtonText}}</button>
+
+  @if (data.cancelButtonText !== "") {
+    <button mat-button mat-dialog-close cdkFocusInitial>{{data.cancelButtonText}}</button>
+  }
 </mat-dialog-actions>

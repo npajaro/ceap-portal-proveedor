@@ -1,9 +1,11 @@
-import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '@services/auth.service';
 import { Subscription, filter } from 'rxjs';
-import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
+
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { CoreDialogService } from '@services/core-dialog.service';
+import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 
 
 
@@ -14,19 +16,130 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnDestroy {
-  private router = inject(Router);
-  title = ''
-
+export class AppComponent implements OnInit, OnDestroy {
+  private router        = inject(Router);
+  private coreDialogSv  = inject(CoreDialogService);
+  private authSv        = inject(AuthService);
+  private inactivityTimeout: any;
+  private inactivityTime = 5 * 60 * 1000 // 5 minutos en milisegundo
+  private isDialogOpen = false;
   public titleSub$!: Subscription;
 
-  private authService = inject(AuthService);
+  title = ''
+
 
   constructor() {
     this.titleSub$ = this.argumentoRuta()
   }
+
+  ngOnInit(): void {
+    this.checkInitialSession();
+    this.startInactivityTimer();
+    // window.addEventListener('focus', () => this.checkSession());
+
+    // document.addEventListener('visibilitychange', () => {
+    //   if (document.visibilityState === 'visible') {
+    //     this.checkSession();
+    //   }
+    // }, false);
+
+    // window.addEventListener('focus', () => {
+    //   if (document.hasFocus() && document.visibilityState === 'visible') {
+    //     console.log('entreeeeee')
+    //     this.checkSession();
+    //   }
+    // });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        // console.log('ingreseee')
+        this.checkSession();
+      }
+    });
+  }
+
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    window.removeEventListener('focus', () => this.checkSession());
+    this.titleSub$.unsubscribe();
+  }
+
+  private checkInitialSession() {
+    const lastActivity = localStorage.getItem('lastActivity');
+    const isTokenValid = localStorage.getItem('isTokenValid') === 'true';
+    const sessionExpired = localStorage.getItem('sessionExpired') === 'true';
+
+    if (this.isAuthenticated() && sessionExpired) {
+      this.showSessionExpiredDialog();
+    } else if (this.isAuthenticated() && lastActivity && Date.now() - parseInt(lastActivity, 10) > this.inactivityTime) {
+      this.showSessionExpiredDialog();
+    } else if (this.isAuthenticated() && !isTokenValid) {
+      this.showSessionExpiredDialog();
+    }
+  }
+
+  private startInactivityTimer() {
+    this.resetInactivityTimer();
+    document.addEventListener('mousemove', () => this.resetInactivityTimer());
+    document.addEventListener('keypress', () => this.resetInactivityTimer());
+    document.addEventListener('scroll', () => this.resetInactivityTimer());
+    document.addEventListener('keydown', () => this.resetInactivityTimer());
+    document.addEventListener('click', () => this.resetInactivityTimer());
+    document.addEventListener('touchstart', () => this.resetInactivityTimer());
+    document.addEventListener('touchmove', () => this.resetInactivityTimer());
+  }
+
+  private resetInactivityTimer() {
+    clearTimeout(this.inactivityTimeout);
+    localStorage.setItem('lastActivity', Date.now().toString());
+    this.inactivityTimeout = setTimeout(() => {
+      if (this.isAuthenticated()) {
+        localStorage.setItem('sessionExpired', 'true');
+        this.showSessionExpiredDialog();
+      }
+    }, this.inactivityTime);
+  }
+
+  private checkSession() {
+    if (this.isAuthenticated()) {
+      this.authSv.checkToken().subscribe((isValid) => {
+        localStorage.setItem('isTokenValid', isValid.toString());
+        if (!isValid) {
+          localStorage.setItem('sessionExpired', 'true');
+          this.showSessionExpiredDialog();
+        }
+      });
+    }
+  }
+
+  private showSessionExpiredDialog() {
+    if (!this.isDialogOpen && this.isAuthenticated()) {
+      this.isDialogOpen = true;
+      const dialog = this.coreDialogSv.openDialogAlert(
+        'Sesión expirada',
+        'Su sesión ha expirado debido a la inactividad. Por favor, inicie sesión nuevamente.',
+        'logout', 'verde', 'Cerrar', '',
+      );
+      dialog.afterClosed().subscribe(result => {
+        if (result) {
+          this.doLogout();
+        }
+        this.isDialogOpen = false;
+        localStorage.removeItem('sessionExpired');
+      });
+    }
+  }
+
+  private isAuthenticated(): boolean {
+    const token = localStorage.getItem('token');
+    const currentRoute = this.router.url;
+    return token !== null && !['/auth'].includes(currentRoute);
+  }
+
+  doLogout() {
+    this.authSv.logout();
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   }
 
   public argumentoRuta() {
