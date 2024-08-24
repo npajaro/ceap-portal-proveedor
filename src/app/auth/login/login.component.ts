@@ -117,7 +117,7 @@ export class LoginComponent implements OnInit {
           id: bodyTercero.numeroIdentificacion || '',
           captchaToken: bodyTercero.captchaToken || '',
         }
-        sessionStorage.setItem('tercero', JSON.stringify(tercero));
+        localStorage.setItem('tercero', JSON.stringify(tercero));
         this.spinnerSv.hide();
         // this.router.navigateByUrl('/auth/otp-validators');
         this.navigateToOtpPage();

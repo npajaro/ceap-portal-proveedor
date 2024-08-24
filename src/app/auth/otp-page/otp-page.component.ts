@@ -41,7 +41,7 @@ export class OtpPageComponent {
   private toastId               = ToastId;
   private lastOTPValue: string  = '';
 
-  public dataTercero: Tercero = this.getTerceroFromSessionStorage();
+  public dataTercero: Tercero = this.getTerceroFromLocalStorage();
   public turnstileToken!: string;
 
   countdown: number = 3;
@@ -65,7 +65,7 @@ export class OtpPageComponent {
   onTokenReceived(token: string) {
     this.turnstileToken = token;
     this.dataTercero.captchaToken = token;
-    sessionStorage.setItem('tercero', JSON.stringify(this.dataTercero));
+    localStorage.setItem('tercero', JSON.stringify(this.dataTercero));
     console.log({ token });
   }
 
@@ -125,8 +125,8 @@ export class OtpPageComponent {
     this.startCountdown();
   }
 
-  private getTerceroFromSessionStorage(): Tercero {
-    const tercero = sessionStorage.getItem('tercero');
+  private getTerceroFromLocalStorage(): Tercero {
+    const tercero = localStorage.getItem('tercero');
     return tercero ? JSON.parse(tercero) : {};
   }
 

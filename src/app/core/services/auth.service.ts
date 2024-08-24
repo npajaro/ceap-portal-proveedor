@@ -34,7 +34,7 @@ export class AuthService {
 
 
   public initializeUserFromLocalStorage() {
-    const dataUser = sessionStorage.getItem('tercero');
+    const dataUser = localStorage.getItem('tercero');
     if (dataUser) {
       const user = JSON.parse(dataUser);
       this._currentUser.set(user);
@@ -88,7 +88,7 @@ export class AuthService {
   }
 
   private setAuthentication(response: CheckTokenResponseSuccess): boolean {
-    const dataUser = sessionStorage.getItem('tercero');
+    const dataUser = localStorage.getItem('tercero');
     if (!dataUser) {
       return false;
     } else {
