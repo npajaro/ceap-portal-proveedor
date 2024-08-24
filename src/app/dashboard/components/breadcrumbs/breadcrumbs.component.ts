@@ -3,15 +3,18 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivationEnd, Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
+import { TruncatePipe } from '@shared/pipes/truncate.pipe';
 import { Subscription, filter } from 'rxjs';
+
 
 @Component({
   selector: 'app-breadcrumbs',
   standalone: true,
   imports: [
     CommonModule,
-    MatIconModule
-  ],
+    MatIconModule,
+    TruncatePipe
+],
   templateUrl: './breadcrumbs.component.html',
   styleUrl: './breadcrumbs.component.css',
   // changeDetection: ChangeDetectionStrategy.OnPush,

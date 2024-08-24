@@ -14,6 +14,9 @@ import {MatMenuModule} from '@angular/material/menu';
 import { BreadcrumbsComponent } from "../components/breadcrumbs/breadcrumbs.component";
 import { CoreDialogService } from '@services/core-dialog.service';
 import { AuthService } from '@services/auth.service';
+import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
+import { CoreOverlaySpinnerComponent } from "../../shared/components/core-overlay-spinner/core-overlay-spinner.component";
+
 
 interface MenuItem {
   label: string;
@@ -43,7 +46,9 @@ interface MenuItem {
     RouterOutlet,
     MatMenuModule,
     SideMenuComponent,
-    BreadcrumbsComponent
+    BreadcrumbsComponent,
+    LoadingSpinnerComponent,
+    CoreOverlaySpinnerComponent
 ],
 })
 export class DashboardLayoutComponent {

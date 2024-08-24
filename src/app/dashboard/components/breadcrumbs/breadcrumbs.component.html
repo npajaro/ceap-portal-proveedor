@@ -56,8 +56,14 @@
   </div>
 
   <div class="flex flex-col">
-    <span class="text-xs sm:text-base font-bold text-gray-600">
-      {{ currentUser?.name || 'Sin Name' }}
+    <!-- Para pantallas pequeñas (máximo 14 caracteres) -->
+    <span class="text-right text-xs sm:hidden font-bold text-gray-600">
+      {{ (currentUser?.name || 'Sin Name') | truncate:14 }}
+    </span>
+
+    <!-- Para pantallas medianas en adelante (máximo 50 caracteres) -->
+    <span class="text-right text-xs hidden sm:inline sm:text-base font-bold text-gray-600">
+      {{ (currentUser?.name || 'Sin Name') | truncate:50 }}
     </span>
     <span class="text-right text-xs sm:text-sm font-bold text-gray-950/55">
       {{ currentUser?.id || 'Sin Email' }}

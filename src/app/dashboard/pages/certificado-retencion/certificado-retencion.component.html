@@ -135,7 +135,26 @@
 
         </table>
 
-        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+        <div *ngIf="dataSource!.data['length'] < 1" class="no-date-table tex-center ">
+          <!-- <div class="col mb-5">
+              <div *ngIf="loading" class="spinner-border text-secondary" role="status">
+              </div>
+          </div> -->
+          <div class="flex flex-row justify-center items-center py-4 mt-0 text-sm text-green-900 bg-gray-50 px-4">
+            <div class="text-green-900">
+              <svg aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 inline w-5 h-5 mr-3">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd">
+                </path>
+              </svg>
+            </div>
+              {{"¡Sin datos para mostrar! Por favor haga una búsqueda con filtros."}}.
+          </div>
+        </div>
+
+        <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator> -->
+        <mat-paginator class="rounded-br-lg rounded-bl-lg"
+    class="dark:bg-slate-500 rounded-br-lg rounded-bl-lg border-t-[1.8px] dark:border-t-slate-600 border-t-gray-200 shadow-sm"
+  [pageSizeOptions]="[10, 25, 100, 200]" showFirstLastButtons="true" aria-label="Select page of users"></mat-paginator>
       </div>
     }
   }

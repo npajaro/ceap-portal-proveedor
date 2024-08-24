@@ -17,6 +17,7 @@ import { ApiService } from '@services/api.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { ToastId } from '../../../core/interfaces/toast-Id.enum';
+import { SpinnerService } from '@services/spinner.service';
 
 
 @Component({
@@ -53,6 +54,7 @@ export default class CertificadoRetencionComponent implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);
   private coreSnackbarSv     = inject(CoreSnackbarService);
   private apiSv              = inject(ApiService);
+  private spinnerSv          = inject(SpinnerService);
   private fb                 = inject(FormBuilder);
 
   private ToastId = ToastId;
@@ -95,22 +97,39 @@ export default class CertificadoRetencionComponent implements OnInit {
   }
 
   public getConsultCertificados(myForm: any) {
+    this.spinnerSv.show()
     const { tipoCertificado, years } = myForm;
     const [fechaInicial, fechaFinal] = years.split('-');
     this.apiSv.getCertificados({ fechaInicial, fechaFinal, termino: tipoCertificado }).subscribe({
       next: (data) => {
+        if (data.length === 0) {
+          this.coreSnackbarSv.openSnackbar(
+            'No hay certificados para este año',
+            'Cerrar',
+            ToastId.WARNING,
+            {verticalPosition: 'top', horizontalPosition: 'center', duration: 2000}
+          )
+        }
         this.dataSource.data = data;
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
         this.reporCertificados = data;
+        this.spinnerSv.hide();
       },
       error: (error) => {
+        this.spinnerSv.hide();
         this.reporCertificados = []
         this.coreSnackbarSv.openSnackbar(
           'Error al consultar los certificados',
           'Cerrar',
           ToastId.ERROR,
-          {verticalPosition: 'top'}
+          {verticalPosition: 'top', horizontalPosition: 'center', duration: 3000}
         )
         console.error('Error al consultar los certificados', error);
+      },
+      complete: () => {
+        console.log('complete')
+        this.spinnerSv.hide();
       }
     })
 
@@ -121,19 +140,26 @@ export default class CertificadoRetencionComponent implements OnInit {
     // Lógica para descargar el PDF
   }
 
+
   public currentYear() {
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getFullYear() - 1; // Restar 1 para excluir el año actual
+    let minYear = currentYear;
+
+    // Generar rangos individuales de años
     for (let i = 0; i < 5; i++) {
       const year = currentYear - i;
       this.years.push({
         name: `${year}`,
         value: `${year}0101-${year}1231`
       });
+      minYear = year; // Actualizar el año mínimo
     }
-  }
 
-  public onChangeValue(event: any) {
-    console.log(event);
+    // Agregar opción para seleccionar todo el rango de 5 años
+    this.years.push({
+      name: `Últimos 5 años`,
+      value: `${minYear}0101-${currentYear}1231`
+    });
   }
 
 
