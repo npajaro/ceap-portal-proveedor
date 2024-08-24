@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { map } from 'rxjs';
-import { Certificados } from '@interfaces/certificados.interfaces';
+import { Action, Certificados } from '@interfaces/certificados.interfaces';
 import { ApiService } from '@services/api.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CoreSnackbarService } from '@services/core-snackbar.service';
@@ -135,10 +135,37 @@ export default class CertificadoRetencionComponent implements OnInit {
 
   }
 
-  public onDownload(row: Certificados) {
-    console.log('Downloading PDF for:', row);
-    // Lógica para descargar el PDF
+  public onDownload(row: Action[]) {
+    this.spinnerSv.show();
+
+    this.apiSv.downloadPdf(row).subscribe({
+      next: (data) => {
+        const blob = new Blob([data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${row[0].Certificado}-${row[0].Nit}-${row[0].Anio}-${row[0].ID_PERIODO}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.spinnerSv.hide();
+      },
+      error: (error) => {
+        this.spinnerSv.hide();
+        this.coreSnackbarSv.openSnackbar(
+          'Error al descargar el certificado',
+          'Cerrar',
+          ToastId.ERROR,
+          {verticalPosition: 'top', horizontalPosition: 'center', duration: 3000}
+        )
+        console.error('Error al descargar el certificado', error);
+      },
+      complete: () => {
+        console.log('complete')
+        this.spinnerSv.hide();
+      }
+    })
   }
+
 
 
   public currentYear() {
