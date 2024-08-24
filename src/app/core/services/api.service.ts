@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '@env/environment';
+import { Certificados, Parametros } from '@interfaces/certificados.interfaces';
 import { Tercero } from '@interfaces/tercero.interface';
 import { Observable, catchError, throwError } from 'rxjs';
 
@@ -12,46 +13,30 @@ export class ApiService {
   private apiUrl  = environment.API_URL;
 
 
-  // private getAuthHeaders() {
-  //   const headers = new HttpHeaders({
-  //     'conniKey': environment.CONNIKEY,
-  //     'conniToken': environment.CONNITOKEN
-  //   });
+  private getAuthHeaders(fechaInicial: string, fechaFinal: string, termino: string ): { headers: HttpHeaders; params: HttpParams } {
+    const authToken = localStorage.getItem('token') || '';
+    const tercero: Tercero   = JSON.parse(localStorage.getItem('tercero') || '{}');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`,
+    });
 
-  //   return { headers };
-  // }
+    const params = new HttpParams()
+      .set('fechaInicial', fechaInicial)
+      .set('fechaFinal', fechaFinal)
+      .set('termino', termino)
+      .set('id', tercero.id || '')
 
+    return { headers, params };
+  }
 
-  // public getTercero(nit: string): Observable<Tercero> {
-  //   const url = `${this.apiUrl}/tercero`;
-  //   const params = new HttpParams()
-  //   .set('nit', nit)
+  public getCertificados(parametros: Parametros): Observable<Certificados[]> {
+    const url = `${this.apiUrl}/api/tercero/get-certificados`;
 
-  //   return this.http.get<Tercero>(url, { params })
-  // }
+    const { headers, params } = this.getAuthHeaders(parametros.fechaInicial, parametros.fechaFinal, parametros.termino);
 
-
-  // public checkIdentity(body: { captchaToken: string,  numeroIdentificacion: string  }): Observable<Tercero> {
-  //   const url = `${this.apiUrl}/api/public/tercero/identity-document`;
-  //   console.log(body)
-
-  //   return this.http.post<Tercero>(url, body)
-  // }
-
-  // public resendOtp(body: { captchaToken: string,  numeroIdentificacion: string  }) {
-  //   const url = `${this.apiUrl}/api/public/tercero/resend-otp`;
-  //   console.log(body)
-
-  //   return this.http.post<Tercero>(url, body)
-  // }
-
-
-  // public validarOtp(body: { otp: string,  numeroIdentificacion: string  }): Observable<Tercero> {
-  //   const url = `${this.apiUrl}/api/public/tercero/validar-otp`;
-  //   console.log(body)
-
-  //   return this.http.post<Tercero>(url, body)
-  // }
+    return this.http.get<Certificados[]>(url, { headers, params })
+  }
 
 
 

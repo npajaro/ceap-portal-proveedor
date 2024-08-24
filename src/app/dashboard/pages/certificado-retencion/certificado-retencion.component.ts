@@ -12,57 +12,20 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { map } from 'rxjs';
+import { Certificados } from '@interfaces/certificados.interfaces';
+import { ApiService } from '@services/api.service';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CoreSnackbarService } from '@services/core-snackbar.service';
+import { ToastId } from '../../../core/interfaces/toast-Id.enum';
 
-export interface Certificado {
-  id: string;
-  tipoCertificado: string;
-  ano: string;
-  periodo: string;
-  actions: string;
-}
-
-/** Constants used to fill up our data base. */
-const FRUITS: string[] = [
-  'blueberry',
-  'lychee',
-  'kiwi',
-  'mango',
-  'peach',
-  'lime',
-  'pomegranate',
-  'pineapple',
-];
-const NAMES: string[] = [
-  'Maia',
-  'Asher',
-  'Olivia',
-  'Atticus',
-  'Amelia',
-  'Jack',
-  'Charlotte',
-  'Theodore',
-  'Isla',
-  'Oliver',
-  'Isabella',
-  'Jasper',
-  'Cora',
-  'Levi',
-  'Violet',
-  'Arthur',
-  'Mia',
-  'Thomas',
-  'Elizabeth',
-];
-
-/**
- * @title Data table with sorting, pagination, and filtering.
- */
 
 @Component({
   selector: 'app-certificado-retencion',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatInputModule,
     MatTableModule,
     MatSortModule,
@@ -76,16 +39,23 @@ const NAMES: string[] = [
   ],
   templateUrl: './certificado-retencion.component.html',
   styleUrl: './certificado-retencion.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export default class CertificadoRetencionComponent implements OnInit {
   displayedColumns: string[] = ['id', 'tipoCertificado', 'ano', 'periodo', 'actions'];
-  dataSource = new MatTableDataSource<Certificado>();
+  dataSource = new MatTableDataSource<Certificados>();
+  reporCertificados: Certificados[] = [];
+
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   private breakpointObserver = inject(BreakpointObserver);
+  private coreSnackbarSv     = inject(CoreSnackbarService);
+  private apiSv              = inject(ApiService);
+  private fb                 = inject(FormBuilder);
+
+  private ToastId = ToastId;
   private isMobile$ = this.breakpointObserver
   .observe(Breakpoints.XSmall)
   .pipe(
@@ -94,45 +64,10 @@ export default class CertificadoRetencionComponent implements OnInit {
 
   isMobile = toSignal(this.isMobile$, {initialValue: false} )
 
-
-
-  reporCertificados: Certificado[] = [
-    {
-      id: "1",
-      tipoCertificado: "Certificado Anual De Renta",
-      ano: "2021",
-      periodo: "Anual - 2021",
-      actions: "Descargar"
-    },
-    {
-      id: "2",
-      tipoCertificado: "Certificado Anual De Renta",
-      ano: "2020",
-      periodo: "Anual - 2020",
-      actions: "Descargar"
-    },
-    {
-      id: "3",
-      tipoCertificado: "Certificado Bimestral De ICA",
-      ano: "2021",
-      periodo: "ENE-FEB",
-      actions: "Descargar"
-    },
-    {
-      id: "4",
-      tipoCertificado: "Certificado Anual De Renta",
-      ano: "2019",
-      periodo: "Anual - 2019",
-      actions: "Descargar"
-    },
-    {
-      id: "5",
-      tipoCertificado: "Certificado Anual De Renta",
-      ano: "2018",
-      periodo: "Anual - 2018",
-      actions: "Descargar"
-    }
-  ];
+  public myForm: FormGroup = this.fb.group({
+    tipoCertificado:    ['', Validators.required],
+    years:              ['', Validators.required],
+  })
 
   certificados = [
     { name: 'Certificado Anual De Renta', termino: '1,4,5', value: '1,4,5' },
@@ -140,40 +75,52 @@ export default class CertificadoRetencionComponent implements OnInit {
     { name: 'Certificado Bimestral De ICA', termino: '3', value: '3B' },
   ];
 
-
-
-
   years: { name: string, value: string }[] = [];
 
-  constructor() {
-
-    // Create 100 users
-    // const users = Array.from({ length: 100 }, (_, k) => createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
-    // this.dataSource = new MatTableDataSource(users);
-  }
 
   ngOnInit(): void {
     this.currentYear()
-    this.dataSource.data = [
-      { id: '1', tipoCertificado: 'Certificado Anual De Renta', ano: '2021', periodo: 'Anual - 2021', actions: 'picture_as_pdf' },
-      { id: '2', tipoCertificado: 'Certificado Anual De Renta', ano: '2020', periodo: 'Anual - 2020', actions: 'picture_as_pdf' },
-      { id: '3', tipoCertificado: 'Certificado Anual De ICA',   ano: '2021', periodo: 'ENE-FEB', actions: 'picture_as_pdf' },
-      { id: '4', tipoCertificado: 'Certificado Anual De Renta', ano: '2019', periodo: 'Anual - 2019', actions: 'picture_as_pdf' },
-      { id: '5', tipoCertificado: 'Certificado Anual De Renta', ano: '2018', periodo: 'Anual - 2019', actions: 'picture_as_pdf' },
-    ]
+
+    this.myForm.valueChanges.subscribe(() => {
+      if (this.myForm.valid) {
+        const myForm = this.myForm.value;
+        this.getConsultCertificados( myForm);
+      }
+    })
   }
 
-  // ngAfterViewInit() {
-  //   this.dataSource.paginator = this.paginator;
-  //   this.dataSource.sort = this.sort;
-  // }
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
 
-  public onDownload(row: Certificado) {
+  public getConsultCertificados(myForm: any) {
+    const { tipoCertificado, years } = myForm;
+    const [fechaInicial, fechaFinal] = years.split('-');
+    this.apiSv.getCertificados({ fechaInicial, fechaFinal, termino: tipoCertificado }).subscribe({
+      next: (data) => {
+        this.dataSource.data = data;
+        this.reporCertificados = data;
+      },
+      error: (error) => {
+        this.reporCertificados = []
+        this.coreSnackbarSv.openSnackbar(
+          'Error al consultar los certificados',
+          'Cerrar',
+          ToastId.ERROR,
+          {verticalPosition: 'top'}
+        )
+        console.error('Error al consultar los certificados', error);
+      }
+    })
+
+  }
+
+  public onDownload(row: Certificados) {
     console.log('Downloading PDF for:', row);
     // Lógica para descargar el PDF
   }
+
   public currentYear() {
     const currentYear = new Date().getFullYear();
     for (let i = 0; i < 5; i++) {
@@ -201,19 +148,3 @@ export default class CertificadoRetencionComponent implements OnInit {
 
 
  }
-
-//  /** Builds and returns a new User. */
-// function createNewUser(id: number): Certificado {
-//   const name =
-//     NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
-//     ' ' +
-//     NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
-//     '.';
-
-//   return {
-//     id: id.toString(),
-//     name: name,
-//     progress: Math.round(Math.random() * 100).toString(),
-//     fruit: FRUITS[Math.round(Math.random() * (FRUITS.length - 1))],
-//   };
-// }
