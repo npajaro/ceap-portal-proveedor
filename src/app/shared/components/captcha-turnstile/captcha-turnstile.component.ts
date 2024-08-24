@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 declare global {
   interface Window {
     onTurnstileSuccess: (token: string) => void;
+    turnstileLoaded: boolean;
   }
 }
 
@@ -16,7 +17,7 @@ declare global {
   template: `
   <div
     class="cf-turnstile"
-    data-sitekey="0x4AAAAAAAevxgekk8WbuO2S"
+    data-sitekey="0x4AAAAAAAhMe9pONagwCxLr"
     data-callback="onTurnstileSuccess"
     data-theme="light">
   </div>
@@ -33,18 +34,24 @@ export class CaptchaTurnstileComponent {
   @Output() tokenReceived = new EventEmitter<string>();
 
   constructor() {
-    this.loadScript()
+    this.loadScript();
   }
 
   private loadScript() {
+    if (window.turnstileLoaded) {
+      this.initializeTurnstile();
+      return;
+    }
+
     const script = document.createElement('script');
     script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
     script.onload = () => {
+      window.turnstileLoaded = true;
       this.initializeTurnstile();
-    }
+    };
   }
 
   private initializeTurnstile() {
@@ -52,6 +59,4 @@ export class CaptchaTurnstileComponent {
       this.tokenReceived.emit(token);
     };
   }
-
 }
-

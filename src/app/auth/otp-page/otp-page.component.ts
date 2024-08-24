@@ -12,6 +12,8 @@ import { ApiService } from '@services/api.service';
 import { routes } from '../../app.routes';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
+import { CaptchaTurnstileComponent } from '@shared/components/captcha-turnstile/captcha-turnstile.component';
+
 
 @Component({
     selector: 'app-otp-page',
@@ -20,12 +22,13 @@ import { AuthService } from '@services/auth.service';
     styleUrl: './otp-page.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        TruncatePipe,
-        MatButtonModule,
-        MatInputModule,
-        MatFormFieldModule
-    ],
+    CommonModule,
+    TruncatePipe,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    CaptchaTurnstileComponent
+],
 })
 export class OtpPageComponent {
   @ViewChild('txtTagOtpInput') public tagOTP!: ElementRef<HTMLInputElement>;
@@ -39,6 +42,7 @@ export class OtpPageComponent {
   private lastOTPValue: string  = '';
 
   public dataTercero: Tercero = this.getTerceroFromSessionStorage();
+  public turnstileToken!: string;
 
   countdown: number = 3;
   isResendDisabled: boolean = true;
@@ -47,6 +51,13 @@ export class OtpPageComponent {
   ngOnInit() {
     this.startCountdown();
     console.log(this.dataTercero);
+  }
+
+  onTokenReceived(token: string) {
+    this.turnstileToken = token;
+    this.dataTercero.captchaToken = token;
+    sessionStorage.setItem('tercero', JSON.stringify(this.dataTercero));
+    console.log({ token });
   }
 
   public validateOTP() {
@@ -127,14 +138,16 @@ export class OtpPageComponent {
   private handleOtpError(error: any, action: 'send' | 'resend') {
     this.spinnerSv.hide();
 
-    const errorCode = error.status || error.codigo || (error.error && error.error.codigo);
+    const errorCode = error.codigo || error.error.codigo;
     const errorMessage = this.getErrorMessage(errorCode, action);
 
     this.coreSnackbarService.openSnackbar(errorMessage, 'Cerrar', this.toastId.ERROR);
     console.error(errorMessage, error);
 
     if (errorCode === '408') {
-      this.navigateToLogin();
+      setTimeout(() => {
+        this.refrehsPage();
+      }, 2000)
     }
   }
 
@@ -156,8 +169,8 @@ export class OtpPageComponent {
     console.log(`Código OTP reenviado al correo ${this.dataTercero.email.toLowerCase()}`, data);
   }
 
-  private navigateToLogin() {
-    this.router.navigateByUrl("/auth/login");
+  private refrehsPage() {
+    // this.router.navigateByUrl("/auth/login");
     setTimeout(() => {
       window.location.reload();
     }, 100);

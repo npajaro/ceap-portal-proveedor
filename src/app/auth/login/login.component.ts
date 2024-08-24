@@ -112,16 +112,31 @@ export class LoginComponent implements OnInit {
         }
         sessionStorage.setItem('tercero', JSON.stringify(tercero));
         this.spinnerSv.hide();
-        this.router.navigateByUrl('/auth/otp-validators');
+        // this.router.navigateByUrl('/auth/otp-validators');
+        this.navigateToOtpPage();
         this.coreSnackbarService.close();
       },
       error: (error) => {
-        this.loginForm.get('numberNit')?.setErrors({ invalidNit: 'true' });
-        this.coreSnackbarService.openSnackbar('Error al obtener tercero', 'Cerrar', ToastId.ERROR, {});
+        const codeError: string = error.error.codigo || error.codigo;
+        if (codeError=== '408') {
+          this.coreSnackbarService.openSnackbar(`${error.error.message} del captcha, recargue la pagina por favor`, 'Cerrar', ToastId.ERROR, {});
+        } else if (codeError === '409') {
+          this.coreSnackbarService.openSnackbar('Tiene un OTP en proceso de validacion debe esperar 2 minutos para volver a intentar', 'Cerrar', ToastId.ERROR, {});
+        } else {
+          this.coreSnackbarService.openSnackbar('Error al obtener tercero', 'Cerrar', ToastId.ERROR, {});
+        }
         console.error('Error:', error);
         this.spinnerSv.hide();
+        this.loginForm.get('numberNit')?.setErrors({ invalidNit: 'true' });
       }
     });
+  }
+
+  private navigateToOtpPage() {
+    this.router.navigateByUrl("/auth/otp-validators");
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   }
 
   //* Método para abrir modal

@@ -13,9 +13,12 @@
   <div class="flex justify-center space-x-7 pt-4 pb-2 w-full" data-hs-pin-input="">
     <mat-form-field class="w-full">
       <mat-label>Ingrese OTP</mat-label>
-      <input (input)="validateOTP()" #txtTagOtpInput matInput title="input-Otp" maxlength="6">
+      <input (input)="validateOTP()" #txtTagOtpInput matInput title="Código OTP" maxlength="6">
     </mat-form-field>
   </div>
+
+  <!-- Incluir el componente de captcha aquí -->
+  <app-captcha-turnstile (tokenReceived)="onTokenReceived($event)"></app-captcha-turnstile>
 
   <p class="pt-7 text-pretty text-sm">
     Se ha enviado un código de verificación a tu correo electrónico. <span class="font-bold">{{dataTercero.email || 'Sin data' | lowercase}} </span>
