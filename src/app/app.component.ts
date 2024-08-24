@@ -3,6 +3,8 @@ import { ActivationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '@services/auth.service';
 import { Subscription, filter } from 'rxjs';
 
+
+
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CoreDialogService } from '@services/core-dialog.service';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
@@ -33,8 +35,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.checkInitialSession();
-    this.startInactivityTimer();
+    // this.checkInitialSession();
+    // this.startInactivityTimer();
     // window.addEventListener('focus', () => this.checkSession());
 
     // document.addEventListener('visibilitychange', () => {
@@ -50,9 +52,15 @@ export class AppComponent implements OnInit, OnDestroy {
     //   }
     // });
 
+    // document.addEventListener('visibilitychange', () => {
+    //   if (document.visibilityState === 'visible') {
+    //     // console.log('ingreseee')
+    //     this.checkSession();
+    //   }
+    // });
+
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        // console.log('ingreseee')
+      if (document.visibilityState === 'visible' && !document.hidden) {
         this.checkSession();
       }
     });
@@ -63,41 +71,41 @@ export class AppComponent implements OnInit, OnDestroy {
     this.titleSub$.unsubscribe();
   }
 
-  private checkInitialSession() {
-    const lastActivity = localStorage.getItem('lastActivity');
-    const isTokenValid = localStorage.getItem('isTokenValid') === 'true';
-    const sessionExpired = localStorage.getItem('sessionExpired') === 'true';
+  // private checkInitialSession() {
+  //   const lastActivity = localStorage.getItem('lastActivity');
+  //   const isTokenValid = localStorage.getItem('isTokenValid') === 'true';
+  //   const sessionExpired = localStorage.getItem('sessionExpired') === 'true';
 
-    if (this.isAuthenticated() && sessionExpired) {
-      this.showSessionExpiredDialog();
-    } else if (this.isAuthenticated() && lastActivity && Date.now() - parseInt(lastActivity, 10) > this.inactivityTime) {
-      this.showSessionExpiredDialog();
-    } else if (this.isAuthenticated() && !isTokenValid) {
-      this.showSessionExpiredDialog();
-    }
-  }
+  //   if (this.isAuthenticated() && sessionExpired) {
+  //     this.showSessionExpiredDialog();
+  //   } else if (this.isAuthenticated() && lastActivity && Date.now() - parseInt(lastActivity, 10) > this.inactivityTime) {
+  //     this.showSessionExpiredDialog();
+  //   } else if (this.isAuthenticated() && !isTokenValid) {
+  //     this.showSessionExpiredDialog();
+  //   }
+  // }
 
-  private startInactivityTimer() {
-    this.resetInactivityTimer();
-    document.addEventListener('mousemove', () => this.resetInactivityTimer());
-    document.addEventListener('keypress', () => this.resetInactivityTimer());
-    document.addEventListener('scroll', () => this.resetInactivityTimer());
-    document.addEventListener('keydown', () => this.resetInactivityTimer());
-    document.addEventListener('click', () => this.resetInactivityTimer());
-    document.addEventListener('touchstart', () => this.resetInactivityTimer());
-    document.addEventListener('touchmove', () => this.resetInactivityTimer());
-  }
+  // private startInactivityTimer() {
+  //   this.resetInactivityTimer();
+  //   document.addEventListener('mousemove', () => this.resetInactivityTimer());
+  //   document.addEventListener('keypress', () => this.resetInactivityTimer());
+  //   document.addEventListener('scroll', () => this.resetInactivityTimer());
+  //   document.addEventListener('keydown', () => this.resetInactivityTimer());
+  //   document.addEventListener('click', () => this.resetInactivityTimer());
+  //   document.addEventListener('touchstart', () => this.resetInactivityTimer());
+  //   document.addEventListener('touchmove', () => this.resetInactivityTimer());
+  // }
 
-  private resetInactivityTimer() {
-    clearTimeout(this.inactivityTimeout);
-    localStorage.setItem('lastActivity', Date.now().toString());
-    this.inactivityTimeout = setTimeout(() => {
-      if (this.isAuthenticated()) {
-        localStorage.setItem('sessionExpired', 'true');
-        this.showSessionExpiredDialog();
-      }
-    }, this.inactivityTime);
-  }
+  // private resetInactivityTimer() {
+  //   clearTimeout(this.inactivityTimeout);
+  //   localStorage.setItem('lastActivity', Date.now().toString());
+  //   this.inactivityTimeout = setTimeout(() => {
+  //     if (this.isAuthenticated()) {
+  //       localStorage.setItem('sessionExpired', 'true');
+  //       this.showSessionExpiredDialog();
+  //     }
+  //   }, this.inactivityTime);
+  // }
 
   private checkSession() {
     if (this.isAuthenticated()) {
