@@ -41,37 +41,45 @@ export class AuthService {
     }
   }
 
-  public checkToken(): Observable<Boolean> {
+  public checkToken(): Observable<boolean> {
     const url = `${this.apiUrl}/api/auth/status`;
     const token = localStorage.getItem('token');
+
     if (!token) {
-      console.log('sin token')
+      console.log('sin token');
+      this._authStatus.set(AuthStatus.notAuthenticated);
       return of(false);
     }
 
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<any>(url, {headers}).pipe(
+    this._authStatus.set(AuthStatus.checking);
+
+    return this.http.get<any>(url, { headers }).pipe(
       map((response) => {
-        console.log(response)
         if (response.status === 200) {
-          return response.status === 200;
+          this._authStatus.set(AuthStatus.authenticated);
+          return true;
         } else {
-          console.log('false auth')
+          this._authStatus.set(AuthStatus.notAuthenticated);
           return false;
         }
       }),
       catchError((e: any) => {
         if (e.status === 200) {
+          this._authStatus.set(AuthStatus.authenticated);
           return of(true);
         } else if (e.status === 401) {
+          this._authStatus.set(AuthStatus.notAuthenticated);
           return of(false);
         } else {
+          this._authStatus.set(AuthStatus.notAuthenticated);
           return of(false);
         }
       })
     );
   }
+
 
   public checkIdentity(body: { captchaToken: string,  numeroIdentificacion: string  }): Observable<Tercero> {
     const url = `${this.apiUrl}/api/public/tercero/identity-document`;
