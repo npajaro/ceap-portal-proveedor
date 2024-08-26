@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivationEnd, Router } from '@angular/router';
+import { ActivatedRoute, ActivationEnd, Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
 import { TruncatePipe } from '@shared/pipes/truncate.pipe';
 import { Subscription, filter } from 'rxjs';
@@ -21,6 +21,7 @@ import { Subscription, filter } from 'rxjs';
 })
 export class BreadcrumbsComponent {
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   private authSv = inject(AuthService);
 
   public currentUser = this.authSv.currentUser()
@@ -30,23 +31,18 @@ export class BreadcrumbsComponent {
   public icons: string = '';
 
   constructor() {
-    this.titleSub$ = this.argumentoRuta()
-    .subscribe((data) => {
-      this.titleSection = data.snapshot.data['titleSections'];
-      this.icons = data.snapshot.data['icon'];
-      // document.title = `Bread - ${this.titleSection}`;
-    })
+    this.activatedRoute.firstChild?.data.subscribe((dataRouter) => {
+      this.titleSection = dataRouter["titleSections"];
+      this.icons = dataRouter["icon"];
+    });
+
+    // También puedes mover la lógica de suscripción al evento de cambio de ruta aquí si es necesario.
+    this.router.events.subscribe(() => {
+      this.activatedRoute.firstChild?.data.subscribe((dataRouter) => {
+        this.titleSection = dataRouter["titleSections"];
+        this.icons = dataRouter["icon"];
+      });
+    });
    }
-
-
-
-  public argumentoRuta() {
-    return this.router.events
-    .pipe(
-      filter((event: any) => event instanceof ActivationEnd),
-      filter((event: ActivationEnd) => event.snapshot.firstChild === null),
-    )
-  }
-
 
 }
