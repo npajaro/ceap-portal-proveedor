@@ -119,12 +119,24 @@ export default class CertificadoRetencionComponent implements OnInit {
       error: (error) => {
         this.spinnerSv.hide();
         this.reporCertificados = []
-        this.coreSnackbarSv.openSnackbar(
-          'Error al consultar los certificados',
-          'Cerrar',
-          ToastId.ERROR,
-          {verticalPosition: 'top', horizontalPosition: 'center', duration: 3000}
-        )
+
+        const errorMessage = error?.error?.message || 'Error al consultar los certificados';
+
+        if (errorMessage.includes('No se encontraron registros, por favor verifique')) {
+            this.coreSnackbarSv.openSnackbar(
+                'No hay registros para esta fecha',
+                'Cerrar',
+                ToastId.ERROR,
+                { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
+            );
+        } else {
+            this.coreSnackbarSv.openSnackbar(
+                'Error al consultar los certificados',
+                'Cerrar',
+                ToastId.ERROR,
+                { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
+            );
+        }
         console.error('Error al consultar los certificados', error);
       },
       complete: () => {
