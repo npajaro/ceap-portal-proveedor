@@ -18,6 +18,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { ToastId } from '../../../core/interfaces/toast-Id.enum';
 import { SpinnerService } from '@services/spinner.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { SpinnerDownloadService } from '@services/spinner-download.service';
 
 
 @Component({
@@ -53,8 +55,10 @@ export default class CertificadoRetencionComponent implements OnInit {
 
   private breakpointObserver = inject(BreakpointObserver);
   private coreSnackbarSv     = inject(CoreSnackbarService);
+  private authSv             = inject(AuthService);
   private apiSv              = inject(ApiService);
   private spinnerSv          = inject(SpinnerService);
+  private spinnerDownloadSv  = inject(SpinnerDownloadService);
   private fb                 = inject(FormBuilder);
 
   private ToastId = ToastId;
@@ -119,10 +123,15 @@ export default class CertificadoRetencionComponent implements OnInit {
       error: (error) => {
         this.spinnerSv.hide();
         this.reporCertificados = []
-
+        const errorStatus = error?.status;
         const errorMessage = error?.error?.message || 'Error al consultar los certificados';
 
-        if (errorMessage.includes('No se encontraron registros, por favor verifique')) {
+        if (errorStatus === 401) {
+          this.authSv.logout();
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
+        } else if (errorMessage.includes('No se encontraron registros, por favor verifique')) {
             this.coreSnackbarSv.openSnackbar(
                 'No hay registros para esta fecha',
                 'Cerrar',
@@ -148,7 +157,7 @@ export default class CertificadoRetencionComponent implements OnInit {
   }
 
   public onDownload(row: Action[]) {
-    this.spinnerSv.show();
+    this.spinnerDownloadSv.show();
 
     this.apiSv.downloadPdf(row).subscribe({
       next: (data) => {
@@ -159,10 +168,10 @@ export default class CertificadoRetencionComponent implements OnInit {
         a.download = `${row[0].Certificado}-${row[0].Nit}-${row[0].Anio}-${row[0].ID_PERIODO}.pdf`;
         a.click();
         window.URL.revokeObjectURL(url);
-        this.spinnerSv.hide();
+        this.spinnerDownloadSv.hide();
       },
       error: (error) => {
-        this.spinnerSv.hide();
+        this.spinnerDownloadSv.hide();
         this.coreSnackbarSv.openSnackbar(
           'Error al descargar el certificado',
           'Cerrar',
@@ -173,7 +182,7 @@ export default class CertificadoRetencionComponent implements OnInit {
       },
       complete: () => {
         console.log('complete')
-        this.spinnerSv.hide();
+        this.spinnerDownloadSv.hide();
       }
     })
   }

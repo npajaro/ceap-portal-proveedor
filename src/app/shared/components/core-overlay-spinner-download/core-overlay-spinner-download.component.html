@@ -1,0 +1,21 @@
+
+@if (isLoading$ | async) {
+  <div class="loading-overlay">
+
+    <div role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2 justify-center content-center items-center">
+      <span class="loader">
+        <div class="flex items-center justify-center">
+          <section class="relative flex justify-center items-center content-center p-20">
+            <!-- <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 w-full h-full">
+              <path fill="#ffffffe3" d="M59.8,-49.5C70.8,-33.8,68.5,-9.4,62.9,14.1C57.3,37.5,48.4,59.8,32.4,67.7C16.4,75.5,-6.7,68.8,-28,58.5C-49.2,48.1,-68.6,34.1,-74.2,15.3C-79.8,-3.5,-71.7,-27.1,-57,-43.6C-42.4,-60.2,-21.2,-69.7,1.6,-71C24.4,-72.2,48.7,-65.3,59.8,-49.5Z" transform="translate(100 100)" />
+            </svg> -->
+            <div class=" flex flex-col justify-center items-center content-center">
+              <div class="loaderm"></div>
+              <span class="font-semibold text-verde-mrbono pt-2">Descargando</span>
+            </div>
+          </section>
+        </div>
+      </span>
+    </div>
+  </div>
+}
