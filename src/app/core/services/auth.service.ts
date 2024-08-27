@@ -125,6 +125,10 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('tercero');
+    localStorage.removeItem('sessionExpired');
+    localStorage.removeItem('isTokenValid');
+    localStorage.removeItem('lastActivity');
     this._currentUser.set(null);
     this._authStatus.set(AuthStatus.notAuthenticated);
     this.router.navigateByUrl('/auth/login');

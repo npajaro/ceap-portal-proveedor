@@ -24,7 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private coreDialogSv  = inject(CoreDialogService);
   private authSv        = inject(AuthService);
   private inactivityTimeout: any;
-  private inactivityTime = 60 * 60 * 1000 // 5 minutos en milisegundo
+  private inactivityTime = 10 * 60 * 1000 // 5 minutos en milisegundo
   private isDialogOpen = false;
   public titleSub$!: Subscription;
 
@@ -38,9 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.checkInitialSession();
     this.checkSession();
-
-
-    // this.startInactivityTimer();
+    this.startInactivityTimer();
     // window.addEventListener('focus', () => this.checkSession());
 
     // document.addEventListener('visibilitychange', () => {
@@ -63,11 +61,11 @@ export class AppComponent implements OnInit, OnDestroy {
     //   }
     // });
 
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && !document.hidden) {
-        this.checkSession();
-      }
-    });
+    // document.addEventListener('visibilitychange', () => {
+    //   if (document.visibilityState === 'visible' && !document.hidden) {
+    //     this.checkSession();
+    //   }
+    // });
   }
 
   ngOnDestroy(): void {
@@ -99,35 +97,35 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.isAuthenticated() && sessionExpired) {
       this.showSessionExpiredDialog();
     }
-    // else if (this.isAuthenticated() && lastActivity && Date.now() - parseInt(lastActivity, 10) > this.inactivityTime) {
-    // this.showSessionExpiredDialog();
-    // }
+    else if (this.isAuthenticated() && lastActivity && Date.now() - parseInt(lastActivity, 10) > this.inactivityTime) {
+    this.showSessionExpiredDialog();
+    }
     else if (this.isAuthenticated() && !isTokenValid) {
       this.showSessionExpiredDialog();
     }
   }
 
-  // private startInactivityTimer() {
-  //   this.resetInactivityTimer();
-  //   document.addEventListener('mousemove', () => this.resetInactivityTimer());
-  //   document.addEventListener('keypress', () => this.resetInactivityTimer());
-  //   document.addEventListener('scroll', () => this.resetInactivityTimer());
-  //   document.addEventListener('keydown', () => this.resetInactivityTimer());
-  //   document.addEventListener('click', () => this.resetInactivityTimer());
-  //   document.addEventListener('touchstart', () => this.resetInactivityTimer());
-  //   document.addEventListener('touchmove', () => this.resetInactivityTimer());
-  // }
+  private startInactivityTimer() {
+    this.resetInactivityTimer();
+    document.addEventListener('mousemove', () => this.resetInactivityTimer());
+    document.addEventListener('keypress', () => this.resetInactivityTimer());
+    document.addEventListener('scroll', () => this.resetInactivityTimer());
+    document.addEventListener('keydown', () => this.resetInactivityTimer());
+    document.addEventListener('click', () => this.resetInactivityTimer());
+    document.addEventListener('touchstart', () => this.resetInactivityTimer());
+    document.addEventListener('touchmove', () => this.resetInactivityTimer());
+  }
 
-  // private resetInactivityTimer() {
-  //   clearTimeout(this.inactivityTimeout);
-  //   localStorage.setItem('lastActivity', Date.now().toString());
-  //   this.inactivityTimeout = setTimeout(() => {
-  //     if (this.isAuthenticated()) {
-  //       localStorage.setItem('sessionExpired', 'true');
-  //       this.showSessionExpiredDialog();
-  //     }
-  //   }, this.inactivityTime);
-  // }
+  private resetInactivityTimer() {
+    clearTimeout(this.inactivityTimeout);
+    localStorage.setItem('lastActivity', Date.now().toString());
+    this.inactivityTimeout = setTimeout(() => {
+      if (this.isAuthenticated()) {
+        localStorage.setItem('sessionExpired', 'true');
+        this.showSessionExpiredDialog();
+      }
+    }, this.inactivityTime);
+  }
 
   // funcion para validar checkSession y con base en eso mostrar loadind mientras se valida
   public loading = computed(() => {
@@ -156,7 +154,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isDialogOpen = true;
       const dialog = this.coreDialogSv.openDialogAlert(
         'Sesión expirada',
-        'Su sesión ha expirado debido a la inactividad. Por favor, inicie sesión nuevamente.',
+        'Su sesión ha expirado debido a la inactividad o token vencido. Por favor, inicie sesión nuevamente.',
         'logout', 'verde', 'Cerrar', '',
       );
       dialog.afterClosed().subscribe(result => {
