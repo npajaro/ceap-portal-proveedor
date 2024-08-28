@@ -9,18 +9,21 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CoreDialogService } from '@services/core-dialog.service';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { AuthStatus } from '@interfaces/auth.interfaces';
+import { SpinnerService } from '@services/spinner.service';
+import { CoreOverlaySpinnerComponent } from "./shared/components/core-overlay-spinner/core-overlay-spinner.component";
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, LoadingSpinnerComponent, MatProgressBarModule],
+  imports: [RouterOutlet, LoadingSpinnerComponent, MatProgressBarModule, CoreOverlaySpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit, OnDestroy {
   private router        = inject(Router);
+  private spinnerSv     = inject(SpinnerService);
   private coreDialogSv  = inject(CoreDialogService);
   private authSv        = inject(AuthService);
   private inactivityTimeout: any;
@@ -37,7 +40,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.checkInitialSession();
-    this.checkSession();
+    if (this.isAuthenticated()) {
+      this.checkSession();
+    }
+
     // this.startInactivityTimer();
     // window.addEventListener('focus', () => this.checkSession());
 
@@ -63,7 +69,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && !document.hidden) {
-        this.checkSession();
+        this.checkSession(false);
       }
     });
   }
@@ -137,10 +143,18 @@ export class AppComponent implements OnInit, OnDestroy {
   });
 
 
-  private checkSession() {
+  private checkSession(isLoading: boolean = true) {
+    const isAuth = this.isAuthenticated();
+
+    if (isLoading && isAuth) {
+      this.spinnerSv.show();
+    }
+
+
     if (this.isAuthenticated()) {
       this.authSv.checkToken().subscribe((isValid) => {
         localStorage.setItem('isTokenValid', isValid.toString());
+        this.spinnerSv.hide();
         if (!isValid) {
           // localStorage.setItem('sessionExpired', 'true');
           this.showSessionExpiredDialog();
