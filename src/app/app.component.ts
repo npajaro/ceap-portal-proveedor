@@ -43,29 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.checkSession();
     }
 
-    // this.startInactivityTimer();
-    // window.addEventListener('focus', () => this.checkSession());
-
-    // document.addEventListener('visibilitychange', () => {
-    //   if (document.visibilityState === 'visible') {
-    //     this.checkSession();
-    //   }
-    // }, false);
-
-    // window.addEventListener('focus', () => {
-    //   if (document.hasFocus() && document.visibilityState === 'visible') {
-    //     console.log('entreeeeee')
-    //     this.checkSession();
-    //   }
-    // });
-
-    // document.addEventListener('visibilitychange', () => {
-    //   if (document.visibilityState === 'visible') {
-    //     // console.log('ingreseee')
-    //     this.checkSession();
-    //   }
-    // });
-
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && !document.hidden) {
         this.checkSession(false);
@@ -78,68 +55,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.titleSub$.unsubscribe();
   }
 
-  public finishedAuthCheck = computed<boolean>(() => {
-    const authStatus = this.authSv.authStatus();
-
-    if (authStatus === AuthStatus.checking) {
-      return false; // Todavía estamos verificando el estado de autenticación
-    } else if (authStatus === AuthStatus.notAuthenticated) {
-      if (!['/auth/login', '/auth/otp-validator'].includes(this.router.url)) {
-        this.showSessionExpiredDialog();
-      }
-      return true; // Se ha determinado que no está autenticado
-    }
-
-    return true; // Está autenticado
-  });
-
 
   private checkInitialSession() {
-    const lastActivity = localStorage.getItem('lastActivity');
     const isTokenValid = localStorage.getItem('isTokenValid') === 'true';
-    // const sessionExpired = localStorage.getItem('sessionExpired') === 'true';
 
-    // if (this.isAuthenticated()) {
-    //   this.showSessionExpiredDialog();
-    // }
-    // else if (this.isAuthenticated() && lastActivity && Date.now() - parseInt(lastActivity, 10) > this.inactivityTime) {
-    // this.showSessionExpiredDialog();
-    // }
     if (this.isAuthenticated() && !isTokenValid) {
       this.showSessionExpiredDialog();
     }
   }
-
-  // private startInactivityTimer() {
-  //   this.resetInactivityTimer();
-  //   document.addEventListener('mousemove', () => this.resetInactivityTimer());
-  //   document.addEventListener('keypress', () => this.resetInactivityTimer());
-  //   document.addEventListener('scroll', () => this.resetInactivityTimer());
-  //   document.addEventListener('keydown', () => this.resetInactivityTimer());
-  //   document.addEventListener('click', () => this.resetInactivityTimer());
-  //   document.addEventListener('touchstart', () => this.resetInactivityTimer());
-  //   document.addEventListener('touchmove', () => this.resetInactivityTimer());
-  // }
-
-  // private resetInactivityTimer() {
-  //   clearTimeout(this.inactivityTimeout);
-  //   localStorage.setItem('lastActivity', Date.now().toString());
-  //   this.inactivityTimeout = setTimeout(() => {
-  //     if (this.isAuthenticated()) {
-  //       localStorage.setItem('sessionExpired', 'true');
-  //       this.showSessionExpiredDialog();
-  //     }
-  //   }, this.inactivityTime);
-  // }
-
-  // funcion para validar checkSession y con base en eso mostrar loadind mientras se valida
-  public loading = computed(() => {
-    if (this.finishedAuthCheck()) {
-      return false;
-    } else {
-      return true;
-    }
-  });
 
 
   private checkSession(isLoading: boolean = true) {
@@ -152,14 +75,25 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (this.isAuthenticated()) {
       this.authSv.checkToken().subscribe((isValid) => {
-        localStorage.setItem('isTokenValid', isValid.toString());
+        // localStorage.setItem('isTokenValid', isValid.toString());
         this.spinnerSv.hide('checkSession', 'global');
         if (!isValid) {
           // localStorage.setItem('sessionExpired', 'true');
-          this.showSessionExpiredDialog();
+          // this.showSessionExpiredDialog();
+          this.delaySessionCheckAndShowDialog(isValid);
         }
       });
     }
+  }
+
+  private delaySessionCheckAndShowDialog(isValid:boolean) {
+    setTimeout(() => {
+      localStorage.setItem('isTokenValid', isValid.toString());
+      const isTokenValid = localStorage.getItem('isTokenValid') === 'true';
+      if (!isTokenValid) {
+        this.showSessionExpiredDialog();
+      }
+    }, 100);
   }
 
   private showSessionExpiredDialog() {
