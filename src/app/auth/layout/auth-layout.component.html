@@ -2,7 +2,7 @@
   <main class="sm:bg-[#f0f4f9] flex flex-col justify-center items-center min-h-screen bg-white">
     <section class="flex-grow w-full h-full sm:w-auto sm:max-w-md sm:max-h-[528px] relative px-[1px]">
       <section class="rounded-[28px] overflow-hidden relative">
-        <app-loading-spinner />
+        <app-core-overlay-spinner [spinnerId]="'login'" [spinnerType]="'login'" />
         <section class="p-5 relative z-20 sm:min-h-[435px] sm:min-w-[446px] bg-white rounded-[28px]">
 
             <router-outlet/>

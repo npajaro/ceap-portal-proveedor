@@ -19,7 +19,6 @@ import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { ToastId } from '../../../core/interfaces/toast-Id.enum';
 import { SpinnerService } from '@services/spinner.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { SpinnerDownloadService } from '@services/spinner-download.service';
 
 
 @Component({
@@ -58,7 +57,6 @@ export default class CertificadoRetencionComponent implements OnInit {
   private authSv             = inject(AuthService);
   private apiSv              = inject(ApiService);
   private spinnerSv          = inject(SpinnerService);
-  private spinnerDownloadSv  = inject(SpinnerDownloadService);
   private fb                 = inject(FormBuilder);
 
   private ToastId = ToastId;
@@ -101,7 +99,7 @@ export default class CertificadoRetencionComponent implements OnInit {
   }
 
   public getConsultCertificados(myForm: any) {
-    this.spinnerSv.show()
+    this.spinnerSv.show('consultar-certificados', 'spinnerLoading');
     const { tipoCertificado, years } = myForm;
     const [fechaInicial, fechaFinal] = years.split('-');
     this.apiSv.getCertificados({ fechaInicial, fechaFinal, termino: tipoCertificado }).subscribe({
@@ -118,10 +116,10 @@ export default class CertificadoRetencionComponent implements OnInit {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.reporCertificados = data;
-        this.spinnerSv.hide();
+        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
       },
       error: (error) => {
-        this.spinnerSv.hide();
+        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
         this.reporCertificados = []
         const errorStatus = error?.status;
         const errorMessage = error?.error?.message || 'Error al consultar los certificados';
@@ -150,14 +148,15 @@ export default class CertificadoRetencionComponent implements OnInit {
       },
       complete: () => {
         console.log('complete')
-        this.spinnerSv.hide();
+        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
       }
     })
 
   }
 
   public onDownload(row: Action[]) {
-    this.spinnerDownloadSv.show();
+    this.spinnerSv.show('consultar-certificados', 'spinnerDownload');
+
 
     this.apiSv.downloadPdf(row).subscribe({
       next: (data) => {
@@ -168,10 +167,10 @@ export default class CertificadoRetencionComponent implements OnInit {
         a.download = `${row[0].Certificado}-${row[0].Nit}-${row[0].Anio}-${row[0].ID_PERIODO}.pdf`;
         a.click();
         window.URL.revokeObjectURL(url);
-        this.spinnerDownloadSv.hide();
+        this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
       },
       error: (error) => {
-        this.spinnerDownloadSv.hide();
+        this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
         this.coreSnackbarSv.openSnackbar(
           'Error al descargar el certificado',
           'Cerrar',
@@ -182,7 +181,7 @@ export default class CertificadoRetencionComponent implements OnInit {
       },
       complete: () => {
         console.log('complete')
-        this.spinnerDownloadSv.hide();
+        this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
       }
     })
   }

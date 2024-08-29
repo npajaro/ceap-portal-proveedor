@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatSidenavContainer } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
-import { LoadingSpinnerComponent } from "../../shared/components/loading-spinner/loading-spinner.component";
+import { CoreOverlaySpinnerComponent } from "../../shared/components/core-overlay-spinner/core-overlay-spinner.component";
 
 @Component({
     selector: 'app-auth-layout',
@@ -11,10 +11,10 @@ import { LoadingSpinnerComponent } from "../../shared/components/loading-spinner
     styleUrl: './auth-layout.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        RouterOutlet,
-        MatSidenavContainer,
-        LoadingSpinnerComponent
-    ]
+    CommonModule,
+    RouterOutlet,
+    MatSidenavContainer,
+    CoreOverlaySpinnerComponent
+]
 })
 export class AuthLayoutComponent { }

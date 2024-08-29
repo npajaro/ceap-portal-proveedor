@@ -86,7 +86,7 @@ export class OtpPageComponent {
   }
 
   sendOtp(otp: string) {
-    this.spinnerSv.show();
+    this.spinnerSv.show('login', 'login');
     const bodyOtp = this.createOtpBody(otp);
 
     this.authSv.login(bodyOtp).subscribe({
@@ -96,7 +96,7 @@ export class OtpPageComponent {
   }
 
   resendOtp() {
-    this.spinnerSv.show();
+    this.spinnerSv.show('login', 'login');
     const bodyOtp = this.createOtpBody();
 
     this.authSv.resendOtp(bodyOtp).subscribe({
@@ -139,13 +139,13 @@ export class OtpPageComponent {
   }
 
   private handleOtpSuccess(data: any) {
-    this.spinnerSv.hide();
+    this.spinnerSv.hide('login', 'login');
     console.log('Código OTP enviado correctamente', data);
     this.router.navigateByUrl('/dashboard');
   }
 
   private handleOtpError(error: any, action: 'send' | 'resend') {
-    this.spinnerSv.hide();
+    this.spinnerSv.hide('login', 'login');
 
     const errorCode = error.codigo || error.error.codigo;
     const errorMessage = this.getErrorMessage(errorCode, action);
@@ -173,7 +173,7 @@ export class OtpPageComponent {
 
 
   private handleResendOtpSuccess(data: any) {
-    this.spinnerSv.hide();
+    this.spinnerSv.hide('login', 'login');
     this.coreSnackbarService.openSnackbar(`Código OTP reenviado al correo ${this.dataTercero.email.toLowerCase()}`, 'Cerrar', this.toastId.SUCCESS);
     console.log(`Código OTP reenviado al correo ${this.dataTercero.email.toLowerCase()}`, data);
   }

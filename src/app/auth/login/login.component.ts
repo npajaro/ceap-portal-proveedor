@@ -91,7 +91,7 @@ export class LoginComponent implements OnInit {
   }
 
   public checkIdentity( nit: string) {
-    this.spinnerSv.show();
+    this.spinnerSv.show('login', 'login');
     const bodyTercero = {
       captchaToken: this.turnstileToken,
       numeroIdentificacion: nit
@@ -118,7 +118,7 @@ export class LoginComponent implements OnInit {
           captchaToken: bodyTercero.captchaToken || '',
         }
         localStorage.setItem('tercero', JSON.stringify(tercero));
-        this.spinnerSv.hide();
+        this.spinnerSv.hide('login', 'login');
         // this.router.navigateByUrl('/auth/otp-validators');
         this.navigateToOtpPage();
         this.coreSnackbarService.close();
@@ -133,7 +133,7 @@ export class LoginComponent implements OnInit {
           this.coreSnackbarService.openSnackbar('Error al obtener tercero', 'Cerrar', ToastId.ERROR, {});
         }
         console.error('Error:', error);
-        this.spinnerSv.hide();
+        this.spinnerSv.hide('login', 'login');
         this.loginForm.get('numberNit')?.setErrors({ invalidNit: 'true' });
       }
     });

@@ -7,7 +7,6 @@ import { Subscription, filter } from 'rxjs';
 
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { CoreDialogService } from '@services/core-dialog.service';
-import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { AuthStatus } from '@interfaces/auth.interfaces';
 import { SpinnerService } from '@services/spinner.service';
 import { CoreOverlaySpinnerComponent } from "./shared/components/core-overlay-spinner/core-overlay-spinner.component";
@@ -17,7 +16,7 @@ import { CoreOverlaySpinnerComponent } from "./shared/components/core-overlay-sp
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, LoadingSpinnerComponent, MatProgressBarModule, CoreOverlaySpinnerComponent],
+  imports: [RouterOutlet, MatProgressBarModule, CoreOverlaySpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -147,14 +146,14 @@ export class AppComponent implements OnInit, OnDestroy {
     const isAuth = this.isAuthenticated();
 
     if (isLoading && isAuth) {
-      this.spinnerSv.show();
+      this.spinnerSv.show('checkSession', 'global');
     }
 
 
     if (this.isAuthenticated()) {
       this.authSv.checkToken().subscribe((isValid) => {
         localStorage.setItem('isTokenValid', isValid.toString());
-        this.spinnerSv.hide();
+        this.spinnerSv.hide('checkSession', 'global');
         if (!isValid) {
           // localStorage.setItem('sessionExpired', 'true');
           this.showSessionExpiredDialog();
