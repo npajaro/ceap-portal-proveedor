@@ -104,6 +104,7 @@ export class AuthService {
       this._currentUser.set(user);
       this._authStatus.set(AuthStatus.authenticated);
       localStorage.setItem('token', response.token);
+      localStorage.setItem('isTokenValid', 'true');
       return true;
     }
   }
