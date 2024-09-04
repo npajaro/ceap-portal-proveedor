@@ -1,7 +1,9 @@
 <h2 mat-dialog-title>{{data.title}}</h2>
 <mat-dialog-content>{{data.message}}</mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button color="warn" (click)="closeDialog()" >{{data.confirmButtonText}}</button>
+  @if (data.confirmButtonText !== "") {
+    <button mat-button color="warn" (click)="closeDialog()" >{{data.confirmButtonText}}</button>
+  }
 
   @if (data.cancelButtonText !== "") {
     <button mat-button mat-dialog-close cdkFocusInitial>{{data.cancelButtonText}}</button>
