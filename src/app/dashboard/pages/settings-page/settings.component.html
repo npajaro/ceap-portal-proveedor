@@ -1,1 +1,87 @@
-<p>settings works!</p>,
+<mat-tab-group class="pt-8 gap-x-2 space">
+  <mat-tab label="Información de Contacto">
+    <!-- <app-contact-info></app-contact-info> -->
+     <section class="h-[65vh]">
+      <form [formGroup]="myForm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 pt-4">
+          <div class="grid">
+           <mat-form-field appearance="fill">
+             <mat-label>Nombre Contacto</mat-label>
+             <input formControlName="contacto" type="text" title="Nombre de contacto" matInput >
+             <mat-icon class="text-verde" matSuffix>person</mat-icon>
+           </mat-form-field>
+          </div>
+
+          <div class="grid w-full">
+           <mat-form-field appearance="fill">
+             <mat-label>Correo electrónico</mat-label>
+             <input formControlName="email" type="text" matInput title="Correo electronico"  >
+             <mat-icon class="text-verde" matSuffix>mail</mat-icon>
+           </mat-form-field>
+          </div>
+
+          <div class="grid w-full">
+            <mat-form-field appearance="fill">
+              <mat-label>Dirección 1</mat-label>
+              <input formControlName="dirrecion" type="text" matInput title="Correo electronico"  >
+              <mat-icon class="text-verde" matSuffix>pin_drop</mat-icon>
+            </mat-form-field>
+           </div>
+
+          <div class="grid w-full">
+           <mat-form-field appearance="fill">
+             <mat-label>Teléfono corporativo</mat-label>
+             <input formControlName="telefono" type="text" matInput title="Correo electronico" >
+             <mat-icon class="text-verde" matSuffix>phone</mat-icon>
+           </mat-form-field>
+          </div>
+        </div>
+      </form>
+
+      <div>
+       <button (click)="onSubmit()" type="button" mat-flat-button color="primary" class="w-full">Guardar</button>
+      </div>
+
+     </section>
+  </mat-tab>
+
+
+  <div class="cursor-not-allowed">
+    <mat-tab class="cursor-not-allowed" disabled="true" label="Información de la Empresa">
+      <!-- <app-company-info></app-company-info> -->
+      <section class="h-[65vh]">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 pt-4">
+          <div class="grid">
+           <mat-form-field appearance="fill">
+             <mat-label>Nombre de la compañía</mat-label>
+             <input type="text" title="Nombre de la compañía" matInput value="INVERSISA S.A.S">
+             <mat-icon class="text-verde" matSuffix>domain</mat-icon>
+           </mat-form-field>
+          </div>
+
+          <div class="grid w-full">
+           <mat-form-field appearance="fill">
+             <mat-label>Dirección 1</mat-label>
+             <input type="text" matInput title="Correo electronico" value="AV CIRCUNVALAR CL 110 3 PARQUE IND">
+             <mat-icon class="text-verde" matSuffix>mail</mat-icon>
+           </mat-form-field>
+          </div>
+
+          <div class="grid w-full">
+           <mat-form-field appearance="fill">
+             <mat-label>Teléfono corporativo</mat-label>
+             <input type="text" matInput title="Correo electronico" value="3015184734">
+             <mat-icon class="text-verde" matSuffix>phone</mat-icon>
+           </mat-form-field>
+          </div>
+        </div>
+
+        <div>
+         <button mat-flat-button color="primary" class="w-full">Guardar</button>
+        </div>
+
+       </section>
+    </mat-tab>
+  </div>
+</mat-tab-group>
+

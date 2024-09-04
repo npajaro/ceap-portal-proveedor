@@ -1,3 +1,11 @@
-:host {
-  display: block;
+/* .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs>.mat-mdc-tab-header .mat-mdc-tab {
+  background-color: #e5e7eb;
+} */
+
+
+
+::ng-deep .mat-mdc-tab.mdc-tab {
+  /* background-color: #e5e7eb; */
+  align-items: center;
+  margin-right: 0.5rem;
 }

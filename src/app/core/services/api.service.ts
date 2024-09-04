@@ -1,9 +1,10 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { environment } from '@env/environment';
 import { Action, Certificados, Parametros } from '@interfaces/certificados.interfaces';
-import { Tercero } from '@interfaces/tercero.interface';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Proveedor, Tercero } from '@interfaces/tercero.interface';
+import { Observable, catchError, map, throwError } from 'rxjs';
+import { SpinnerService } from './spinner.service';
 
 @Injectable({providedIn: 'root'})
 
@@ -11,6 +12,15 @@ export class ApiService {
 
   private http    = inject(HttpClient);
   private apiUrl  = environment.API_URL;
+  private spinnerSv = inject(SpinnerService);
+
+  private _dataProveedor = signal<Proveedor | null>(null);
+
+  public dataProveedor$ = computed(() => this._dataProveedor());
+
+  constructor() {
+    this.getProveedor().subscribe();
+   }
 
 
   private getAuthHeaders(fechaInicial: string = '', fechaFinal: string = '', termino: string = '' ): { headers: HttpHeaders; params: HttpParams } {
@@ -44,6 +54,30 @@ export class ApiService {
     const { headers } = this.getAuthHeaders();
 
     return this.http.post(url, data, { headers, responseType: 'blob' });
+  }
+
+  public getProveedor(termino?: string): Observable<Proveedor[]> {
+    this.spinnerSv.show('consultar-certificados', 'spinnerLoading');
+    // const url = `${this.apiUrl}/api/tercero/get-proveedor`;
+    const url = `https://api-generator.retool.com/Ear69e/proveedor`;
+
+    const { headers, params } = this.getAuthHeaders('', '', termino);
+
+    return this.http.get<Proveedor[]>(url)
+    .pipe(
+      map((response: Proveedor[]) => {
+        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
+        const { id, ...rest } = response[0];
+        this._dataProveedor.set(rest as Proveedor);
+        // console.log(response[0]);
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
+        this._dataProveedor.set(null);
+        return throwError(() => error);
+      })
+    )
   }
 
 

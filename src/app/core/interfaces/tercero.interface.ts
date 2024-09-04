@@ -5,3 +5,12 @@ export interface Tercero {
   id?: string
   captchaToken?: string
 }
+
+
+export interface Proveedor {
+  id: string,
+  email: string,
+  contacto: string,
+  telefono: string,
+  dirrecion: string
+}
