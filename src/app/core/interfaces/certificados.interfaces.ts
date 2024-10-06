@@ -41,3 +41,9 @@ export interface Parametros {
   termino: string;
   id?: string;
 }
+
+
+export enum Periodicity {
+  BIMONTHLY = 'BIMONTHLY',
+  YEARLY = 'YEARLY'
+}

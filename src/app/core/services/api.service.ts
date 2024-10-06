@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { environment } from '@env/environment';
-import { Action, Certificados, Parametros } from '@interfaces/certificados.interfaces';
+import { Action, Certificados, Parametros, Periodicity } from '@interfaces/certificados.interfaces';
 import { Proveedor, Tercero } from '@interfaces/tercero.interface';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { SpinnerService } from './spinner.service';
@@ -23,7 +23,7 @@ export class ApiService {
    }
 
 
-  private getAuthHeaders(fechaInicial: string = '', fechaFinal: string = '', termino: string = '' ): { headers: HttpHeaders; params: HttpParams } {
+  private getAuthHeaders(fechaInicial: string = '', fechaFinal: string = '', termino: string = '', periodicity: string = '' ): { headers: HttpHeaders; params: HttpParams } {
     const authToken = localStorage.getItem('token') || '';
     const tercero: Tercero   = JSON.parse(localStorage.getItem('tercero') || '{}');
     const headers = new HttpHeaders({
@@ -36,6 +36,7 @@ export class ApiService {
       .set('fechaFinal', fechaFinal)
       .set('termino', termino)
       .set('id', tercero.id || '')
+      .set('periodicity', periodicity);
 
     return { headers, params };
   }
@@ -48,12 +49,12 @@ export class ApiService {
     return this.http.get<Certificados[]>(url, { headers, params })
   }
 
-  public downloadPdf(data: Action[]): Observable<Blob> {
+  public downloadPdf(data: Action[], periodicity: Periodicity = Periodicity.YEARLY): Observable<Blob> {
     const url = `${this.apiUrl}/api/tercero/generar-pdf`;
 
-    const { headers } = this.getAuthHeaders();
+     const { params, headers } = this.getAuthHeaders( '', '', '', periodicity);
 
-    return this.http.post(url, data, { headers, responseType: 'blob' });
+    return this.http.post(url, data, { headers, responseType: 'blob', params });
   }
 
   public getProveedor(termino?: string): Observable<Proveedor[]> {

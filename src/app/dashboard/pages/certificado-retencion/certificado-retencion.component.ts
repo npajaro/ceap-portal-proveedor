@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { map } from 'rxjs';
-import { Action, Certificados } from '@interfaces/certificados.interfaces';
+import { Action, Certificados, Periodicity } from '@interfaces/certificados.interfaces';
 import { ApiService } from '@services/api.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CoreSnackbarService } from '@services/core-snackbar.service';
@@ -91,6 +91,11 @@ export default class CertificadoRetencionComponent implements OnInit {
         this.getConsultCertificados( myForm);
       }
     })
+
+    //Mostrar un log cuando cambia el valor del select tipoCertificado
+    this.myForm.get('tipoCertificado')?.valueChanges.subscribe((value) => {
+      console.log('value', value);
+    });
   }
 
   ngAfterViewInit() {
@@ -157,8 +162,17 @@ export default class CertificadoRetencionComponent implements OnInit {
   public onDownload(row: Action[]) {
     this.spinnerSv.show('consultar-certificados', 'spinnerDownload');
 
+    const tipoCetificado = this.myForm.get('tipoCertificado')?.value;
 
-    this.apiSv.downloadPdf(row).subscribe({
+    if (tipoCetificado === '3A' || tipoCetificado === '3B') {
+      this.downloadPdf(row, Periodicity.BIMONTHLY);
+    } else {
+      this.downloadPdf(row);
+    }
+  }
+
+  public downloadPdf(row: Action[], periodicity: Periodicity = Periodicity.YEARLY) {
+    this.apiSv.downloadPdf(row, periodicity).subscribe({
       next: (data) => {
         const blob = new Blob([data], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
@@ -175,8 +189,8 @@ export default class CertificadoRetencionComponent implements OnInit {
           'Error al descargar el certificado',
           'Cerrar',
           ToastId.ERROR,
-          {verticalPosition: 'top', horizontalPosition: 'center', duration: 3000}
-        )
+          { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
+        );
         console.error('Error al descargar el certificado', error);
       },
       complete: () => {
@@ -185,6 +199,33 @@ export default class CertificadoRetencionComponent implements OnInit {
       }
     })
   }
+
+  // this.apiSv.downloadPdf(row).subscribe({
+  //   next: (data) => {
+  //     const blob = new Blob([data], { type: 'application/pdf' });
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = `${row[0].Certificado}-${row[0].Nit}-${row[0].Anio}-${row[0].ID_PERIODO}.pdf`;
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //     this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
+  //   },
+  //   error: (error) => {
+  //     this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
+  //     this.coreSnackbarSv.openSnackbar(
+  //       'Error al descargar el certificado',
+  //       'Cerrar',
+  //       ToastId.ERROR,
+  //       {verticalPosition: 'top', horizontalPosition: 'center', duration: 3000}
+  //     )
+  //     console.error('Error al descargar el certificado', error);
+  //   },
+  //   complete: () => {
+  //     console.log('complete')
+  //     this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
+  //   }
+  // })
 
 
 
