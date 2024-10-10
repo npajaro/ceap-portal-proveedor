@@ -19,6 +19,7 @@ import { CoreSnackbarService } from '@services/core-snackbar.service';
 import { ToastId } from '../../../core/interfaces/toast-Id.enum';
 import { SpinnerService } from '@services/spinner.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { TransformarPeriodoPipe } from "@pipes/transformar-periodo.pipe";
 
 
 @Component({
@@ -37,8 +38,9 @@ import { AuthService } from '../../../core/services/auth.service';
     MatIconModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule
-  ],
+    MatIconModule,
+    TransformarPeriodoPipe
+],
   templateUrl: './certificado-retencion.component.html',
   styleUrl: './certificado-retencion.component.css',
   changeDetection: ChangeDetectionStrategy.Default,
