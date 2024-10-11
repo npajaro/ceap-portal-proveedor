@@ -166,11 +166,13 @@ export default class CertificadoRetencionComponent implements OnInit {
 
     const tipoCetificado = this.myForm.get('tipoCertificado')?.value;
 
-    if (tipoCetificado === '3A' || tipoCetificado === '3B') {
-      this.downloadPdf(row, Periodicity.BIMONTHLY);
-    } else {
-      this.downloadPdf(row);
-    }
+    const periodicity = tipoCetificado === '3B'
+    ? Periodicity.BIMONTHLY
+    : tipoCetificado === '3A'
+    ? Periodicity.YEARLY_ICA
+    : Periodicity.YEARLY;
+
+    this.downloadPdf(row, periodicity);
   }
 
   public downloadPdf(row: Action[], periodicity: Periodicity = Periodicity.YEARLY) {
