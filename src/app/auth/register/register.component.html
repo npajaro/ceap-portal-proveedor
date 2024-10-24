@@ -13,7 +13,7 @@
 
 <form class="pt-6 w-full" [formGroup]="loginForm" autocomplete="on">
 
-  <mat-form-field appearance="outline" class="w-full pb-2">
+  <mat-form-field class="w-full pb-2">
     <mat-label>Ingrese Nit</mat-label>
     <input type="number" matInput title="Número de Identificación Tributaria" formControlName="nit" />
     @if (isValidField('nit')) {

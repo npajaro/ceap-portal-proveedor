@@ -11,7 +11,7 @@
 </header>
 
 <form class="pt-6 w-full" [formGroup]="loginForm" autocomplete="on">
-  <mat-form-field appearance="fill" class="w-full pb-2">
+  <mat-form-field  class="w-full pb-2">
     <mat-label>Ingrese Nit</mat-label>
     <input type="tel" pattern="\d*" (input)="onInput($event)" matInput title="Número de Identificación Tributaria" formControlName="numberNit" id="numberNit" maxlength="10"/>
     @if (isValidField('numberNit')) {

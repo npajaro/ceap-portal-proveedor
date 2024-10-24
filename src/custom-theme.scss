@@ -178,13 +178,16 @@ $my-theme: mat.define-theme((
     primary: $_primary,
     tertiary: $_tertiary,
   ),
+  density: (
+    scale: 0,
+  )
 ));
 
 // .tertiary-checkbox {
 //   @include mat.checkbox-color($theme, $color-variant: tertiary);
 // }
 
-html {
+:root {
   // Emit theme-dependent styles for common features used across multiple components.
   // @include mat.core-theme($my-theme);
   @include mat.all-component-themes($my-theme);

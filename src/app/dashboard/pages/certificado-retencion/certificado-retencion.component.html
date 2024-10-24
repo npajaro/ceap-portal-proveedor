@@ -3,7 +3,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4">
       <div class="grid w-full">
-        <mat-form-field appearance="fill">
+        <mat-form-field>
           <mat-label>Seleccione certificado</mat-label>
           <mat-select formControlName="tipoCertificado">
             @for (item of certificados; track $index) {
@@ -14,7 +14,7 @@
       </div>
 
       <div class="grid w-full">
-        <mat-form-field appearance="fill">
+        <mat-form-field>
           <mat-label>Seleccione año</mat-label>
           <mat-select formControlName="years">
             @for (year of years; track $index) {
@@ -41,7 +41,7 @@
       @if (reporCertificados.length > 0) {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
           @for (certificado of reporCertificados; track $index) {
-            <mat-card class="overflow-hidden transition-all duration-300 hover:shadow-lg" appearance="outlined">
+            <mat-card class="overflow-hidden transition-all duration-300 hover:shadow-lg">
               <mat-card-header>
                  <div class="flex items-center content-center">
                    <mat-icon class="w-6 h-6 mr-2 text-gray-600">description</mat-icon>
