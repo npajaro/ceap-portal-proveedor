@@ -133,7 +133,7 @@ export class AppComponent implements OnInit, OnDestroy {
       filter((event: any) => event instanceof ActivationEnd),
       filter((event: ActivationEnd) => event.snapshot.firstChild === null),
     ).subscribe((data) => {
-      console.log('Data',data);
+      // console.log('Data',data);
       document.title = `CEAP - ${data.snapshot.data['title']}`;
     })
   }

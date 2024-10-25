@@ -21,6 +21,11 @@ import { SpinnerService } from '@services/spinner.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TransformarPeriodoPipe } from "@pipes/transformar-periodo.pipe";
 
+interface CiudadOption {
+  name: string;
+  value: string;
+}
+
 
 @Component({
   selector: 'app-certificado-retencion',
@@ -45,10 +50,13 @@ import { TransformarPeriodoPipe } from "@pipes/transformar-periodo.pipe";
   styleUrl: './certificado-retencion.component.css',
   changeDetection: ChangeDetectionStrategy.Default,
 })
-export default class CertificadoRetencionComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'tipoCertificado', 'ano', 'periodo', 'actions'];
+export default class CertificadoRetencionComponent implements OnInit, AfterViewInit {
+  displayedColumns: string[] = ['id', 'tipoCertificado', 'ano', 'ciudad', 'periodo', 'actions'];
   dataSource = new MatTableDataSource<Certificados>();
   reporCertificados: Certificados[] = [];
+  ciudades: CiudadOption[] = [];
+  filteredData: Certificados[] = [];
+  allData: Certificados[] = [];
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -60,6 +68,10 @@ export default class CertificadoRetencionComponent implements OnInit {
   private apiSv              = inject(ApiService);
   private spinnerSv          = inject(SpinnerService);
   private fb                 = inject(FormBuilder);
+
+
+  private previousTipoCertificado: string = '';
+  private previousYears: string = '';
 
   private ToastId = ToastId;
   private isMobile$ = this.breakpointObserver
@@ -73,7 +85,13 @@ export default class CertificadoRetencionComponent implements OnInit {
   public myForm: FormGroup = this.fb.group({
     tipoCertificado:    ['', Validators.required],
     years:              ['', Validators.required],
+    ciudad:             ['']
   })
+
+  // Getter para mostrar/ocultar el select de ciudad
+  get showCiudadSelect(): boolean {
+    return this.myForm.get('tipoCertificado')?.value === '3B' || this.myForm.get('tipoCertificado')?.value === '3A';
+  }
 
   certificados = [
     { name: 'Certificado Anual De Renta', termino: '1,4,5', value: '1,4,5' },
@@ -85,18 +103,35 @@ export default class CertificadoRetencionComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.currentYear()
+    this.currentYear();
 
+    // Suscripción a cambios en tipoCertificado y years
     this.myForm.valueChanges.subscribe(() => {
-      if (this.myForm.valid) {
-        const myForm = this.myForm.value;
-        this.getConsultCertificados( myForm);
-      }
-    })
+      const tipoCertificado = this.myForm.get('tipoCertificado')?.value;
+      const years = this.myForm.get('years')?.value;
 
-    //Mostrar un log cuando cambia el valor del select tipoCertificado
-    this.myForm.get('tipoCertificado')?.valueChanges.subscribe((value) => {
-      console.log('value', value);
+      // Solo realizar la consulta si cambian tipoCertificado o years y son válidos
+      if (this.myForm.get('tipoCertificado')?.valid &&
+          this.myForm.get('years')?.valid &&
+          (tipoCertificado !== this.previousTipoCertificado ||
+           years !== this.previousYears)) {
+
+        this.previousTipoCertificado = tipoCertificado;
+        this.previousYears = years;
+        this.getConsultCertificados(this.myForm.value);
+      }
+    });
+
+    // Suscripción específica para el cambio de ciudad
+    this.myForm.get('ciudad')?.valueChanges.subscribe(ciudad => {
+      this.filterDataByCiudad(ciudad);
+    });
+
+    // Suscripción para resetear ciudad cuando cambia tipoCertificado
+    this.myForm.get('tipoCertificado')?.valueChanges.subscribe(tipo => {
+      if (tipo !== '3B' || tipo !== '3A') {
+        this.myForm.patchValue({ ciudad: '' }, { emitEvent: false });
+      }
     });
   }
 
@@ -109,56 +144,115 @@ export default class CertificadoRetencionComponent implements OnInit {
     this.spinnerSv.show('consultar-certificados', 'spinnerLoading');
     const { tipoCertificado, years } = myForm;
     const [fechaInicial, fechaFinal] = years.split('-');
+
     this.apiSv.getCertificados({ fechaInicial, fechaFinal, termino: tipoCertificado }).subscribe({
       next: (data) => {
         if (data.length === 0) {
-          this.coreSnackbarSv.openSnackbar(
-            'No hay certificados para este año',
-            'Cerrar',
-            ToastId.WARNING,
-            {verticalPosition: 'top', horizontalPosition: 'center', duration: 2000}
-          )
+          this.showNoDataMessage();
+          return;
         }
-        this.dataSource.data = data;
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-        this.reporCertificados = data;
-        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
-      },
-      error: (error) => {
-        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
-        this.reporCertificados = []
-        const errorStatus = error?.status;
-        const errorMessage = error?.error?.message || 'Error al consultar los certificados';
 
-        if (errorStatus === 401) {
-          this.authSv.logout();
-          setTimeout(() => {
-            window.location.reload();
-          }, 100);
-        } else if (errorMessage.includes('No se encontraron registros, por favor verifique')) {
-            this.coreSnackbarSv.openSnackbar(
-                'No hay registros para esta fecha',
-                'Cerrar',
-                ToastId.ERROR,
-                { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
-            );
+        // Guardar todos los datos
+        this.allData = data;
+
+        // Procesar ciudades solo si es certificado bimestral
+        if (tipoCertificado === '3B' || tipoCertificado === '3A') {
+          this.processCiudades(data);
+        }
+
+        // Actualizar la vista con todos los datos o los filtrados por ciudad
+        const ciudadSeleccionada = this.myForm.get('ciudad')?.value;
+        if (ciudadSeleccionada && tipoCertificado === '3B' || tipoCertificado === '3A') {
+          this.filterDataByCiudad(ciudadSeleccionada);
         } else {
-            this.coreSnackbarSv.openSnackbar(
-                'Error al consultar los certificados',
-                'Cerrar',
-                ToastId.ERROR,
-                { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
-            );
+          this.updateDataSource(data);
         }
-        console.error('Error al consultar los certificados', error);
-      },
-      complete: () => {
-        console.log('complete')
-        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
-      }
-    })
 
+        this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
+      },
+      error: (error) => this.handleError(error),
+      complete: () => this.spinnerSv.hide('consultar-certificados', 'spinnerLoading')
+    });
+  }
+
+  private processCiudades(data: Certificados[]) {
+    // Extraer ciudades únicas y ordenarlas
+    const uniqueCities = [...new Set(data.map(item => item.ciudad))].sort();
+    this.ciudades = uniqueCities.map(ciudad => ({
+      name: ciudad,
+      value: ciudad
+    }));
+  }
+
+  private showNoDataMessage() {
+    this.coreSnackbarSv.openSnackbar(
+      'No hay certificados para este año',
+      'Cerrar',
+      ToastId.WARNING,
+      {verticalPosition: 'top', horizontalPosition: 'center', duration: 2000}
+    );
+    this.dataSource.data = [];
+    this.reporCertificados = [];
+  }
+
+  private handleError(error: any) {
+    this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
+    this.reporCertificados = [];
+    const errorStatus = error?.status;
+    const errorMessage = error?.error?.message || 'Error al consultar los certificados';
+
+    if (errorStatus === 401) {
+      this.authSv.logout();
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    } else if (errorMessage.includes('No se encontraron registros, por favor verifique')) {
+        this.coreSnackbarSv.openSnackbar(
+            'No hay registros para esta fecha',
+            'Cerrar',
+            ToastId.ERROR,
+            { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
+        );
+    } else {
+        this.coreSnackbarSv.openSnackbar(
+            'Error al consultar los certificados',
+            'Cerrar',
+            ToastId.ERROR,
+            { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
+        );
+    }
+    console.error('Error al consultar los certificados', error);
+  }
+
+
+  private filterDataByCiudad(ciudad: string) {
+    if (!ciudad) {
+      // Si no hay ciudad seleccionada, mostrar todos los datos
+      this.updateDataSource(this.allData);
+    } else {
+      // Filtrar por ciudad seleccionada de los datos almacenados
+      const filteredData = this.allData.filter(item => item.ciudad === ciudad);
+      this.updateDataSource(filteredData);
+    }
+  }
+
+  private updateDataSource(data: Certificados[]) {
+    // Ordenar datos por periodo y ciudad
+    const sortedData = [...data].sort((a, b) => {
+      const periodA = a.periodo || '';
+      const periodB = b.periodo || '';
+      const ciudadA = a.ciudad  || '';
+      const ciudadB = b.ciudad  || '';
+
+      const periodCompare = periodA.localeCompare(periodB);
+      if (periodCompare !== 0) return periodCompare;
+      return ciudadA.localeCompare(ciudadB);
+    });
+
+    this.dataSource.data = sortedData;
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.reporCertificados = sortedData;
   }
 
   public onDownload(row: Action[]) {
@@ -204,34 +298,6 @@ export default class CertificadoRetencionComponent implements OnInit {
     })
   }
 
-  // this.apiSv.downloadPdf(row).subscribe({
-  //   next: (data) => {
-  //     const blob = new Blob([data], { type: 'application/pdf' });
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = `${row[0].Certificado}-${row[0].Nit}-${row[0].Anio}-${row[0].ID_PERIODO}.pdf`;
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //     this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
-  //   },
-  //   error: (error) => {
-  //     this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
-  //     this.coreSnackbarSv.openSnackbar(
-  //       'Error al descargar el certificado',
-  //       'Cerrar',
-  //       ToastId.ERROR,
-  //       {verticalPosition: 'top', horizontalPosition: 'center', duration: 3000}
-  //     )
-  //     console.error('Error al descargar el certificado', error);
-  //   },
-  //   complete: () => {
-  //     console.log('complete')
-  //     this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
-  //   }
-  // })
-
-
 
   public currentYear() {
     const currentYear = new Date().getFullYear() - 1; // Restar 1 para excluir el año actual
@@ -253,16 +319,5 @@ export default class CertificadoRetencionComponent implements OnInit {
       value: `${minYear}0101-${currentYear}1231`
     });
   }
-
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
 
  }

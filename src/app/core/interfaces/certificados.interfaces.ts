@@ -5,6 +5,7 @@ export interface Certificados {
   periodo:         string;
   actions:         Action[];
   tercero:         string;
+  ciudad:          string;
 }
 
 export interface Action {

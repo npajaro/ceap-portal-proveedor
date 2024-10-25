@@ -22,7 +22,21 @@
             }
           </mat-select>
         </mat-form-field>
+      </div>
+
+      @if (showCiudadSelect) {
+        <div class="grid w-full">
+          <mat-form-field>
+            <mat-label>Seleccione ciudad</mat-label>
+            <mat-select formControlName="ciudad">
+              <mat-option value="">Todas las ciudades</mat-option>
+              @for (ciudad of ciudades; track $index) {
+                <mat-option [value]="ciudad.value">{{ciudad.name}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
         </div>
+      }
 
     </div>
 
@@ -112,6 +126,12 @@
           <ng-container matColumnDef="ano">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Año </th>
             <td mat-cell *matCellDef="let row"> {{row.ano}} </td>
+          </ng-container>
+
+          <!-- Ciudad Column -->
+          <ng-container matColumnDef="ciudad">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ciudad </th>
+            <td mat-cell *matCellDef="let row"> {{row.ciudad}} </td>
           </ng-container>
 
           <!-- Periodo Column -->
