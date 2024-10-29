@@ -40,7 +40,7 @@ export class TransformarPeriodoPipe implements PipeTransform {
     const anioFin = fin.substring(0, 4);
     const mesFin = fin.substring(4, 6);
 
-    return `B${bimestre} (${meses[mesinicio]}-${meses[mesFin]} ${anioInicio})`;
+    return `B${bimestre} (${meses[mesinicio]}-${meses[mesFin]})`;
 
   }
 

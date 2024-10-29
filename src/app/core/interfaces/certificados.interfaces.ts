@@ -47,5 +47,7 @@ export interface Parametros {
 export enum Periodicity {
   BIMONTHLY = 'BIMONTHLY',
   YEARLY = 'YEARLY',
-  YEARLY_ICA = 'YEARLY_ICA'
+  YEARLY_ICA = 'YEARLY_ICA',
+  YEARLY_IVA = 'YEARLY_IVA',
+  BIMONTHLY_IVA = 'BIMONTHLY_IVA',
 }

@@ -95,7 +95,9 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
 
   certificados = [
     { name: 'Certificado Anual De Renta', termino: '1,4,5', value: '1,4,5' },
+    { name: 'Certificado Anual De IVA', termino: '2', value: '2' },
     { name: 'Certificado Anual De ICA', termino: '3', value: '3A' },
+    { name: 'Certificado Bimestral De IVA', termino: '2', value: '2B' },
     { name: 'Certificado Bimestral De ICA', termino: '3', value: '3B' },
   ];
 
@@ -258,16 +260,23 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
   public onDownload(row: Action[]) {
     this.spinnerSv.show('consultar-certificados', 'spinnerDownload');
 
-    const tipoCetificado = this.myForm.get('tipoCertificado')?.value;
+    const tipoCertificado = this.myForm.get('tipoCertificado')?.value;
 
-    const periodicity = tipoCetificado === '3B'
-    ? Periodicity.BIMONTHLY
-    : tipoCetificado === '3A'
-    ? Periodicity.YEARLY_ICA
-    : Periodicity.YEARLY;
+    const periodicity = tipoCertificado === '2'
+      ? Periodicity.YEARLY_IVA
+      : tipoCertificado === '2B'
+      ? Periodicity.BIMONTHLY_IVA
+      : tipoCertificado === '3B'
+      ? Periodicity.BIMONTHLY
+      : tipoCertificado === '3A'
+      ? Periodicity.YEARLY_ICA
+      : Periodicity.YEARLY;
+
+    console.log('periodicity', periodicity);
 
     this.downloadPdf(row, periodicity);
   }
+
 
   public downloadPdf(row: Action[], periodicity: Periodicity = Periodicity.YEARLY) {
     this.apiSv.downloadPdf(row, periodicity).subscribe({
