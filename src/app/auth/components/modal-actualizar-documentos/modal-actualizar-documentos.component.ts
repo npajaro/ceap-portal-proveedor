@@ -15,4 +15,10 @@ import { MatDialogModule } from '@angular/material/dialog';
   styleUrl: './modal-actualizar-documentos.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ModalActualizarDocumentosComponent { }
+export class ModalActualizarDocumentosComponent {
+  public onClick(): void {
+    const mensaje = 'Hola Equipo de soporte, necesito actualizar mis documentos, por favor ayudame con este proceso.';
+    const urlEmail = `mailto:developer@mrbono.co?subject=Solicitud actulizar datos&body=${encodeURIComponent(mensaje)}`
+    window.open(urlEmail);
+  }
+}

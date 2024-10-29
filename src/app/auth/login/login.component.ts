@@ -148,9 +148,12 @@ export class LoginComponent implements OnInit {
 
   //* Método para abrir modal
   public openModal(): void {
+    const isMobile = window.innerWidth <= 768;
+
+    console.log('isMobile', isMobile);
     const modalConfig = {
-      width: '35vw',
-      maxWidth: '50vw',
+      width: isMobile ? '80vw' : '450px',
+      maxWidth: isMobile ? '80vw' : '450px',
       height: 'auto',
       enterAnimationDuration: 300,
       exitAnimationDuration: 300,
