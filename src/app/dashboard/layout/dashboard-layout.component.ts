@@ -17,14 +17,6 @@ import { AuthService } from '@services/auth.service';
 import { CoreOverlaySpinnerComponent } from '@shared/components/core-overlay-spinner/core-overlay-spinner.component';
 
 
-
-interface MenuItem {
-  label: string;
-  icon: string;
-  route: string;
-  isActive: boolean;
-}
-
 @Component({
     selector: 'app-dashboard-layout',
     standalone: true,
@@ -66,25 +58,6 @@ export class DashboardLayoutComponent {
       map(result => result.matches),
       shareReplay()
     );
-
-  public menuItem = signal<MenuItem[]>([
-    { label: 'Servicio', icon: 'storage', route: './services', isActive: false },
-    { label: 'Setting', icon: 'settings', route: './settings', isActive: false },
-    // { label: 'Parametros', icon: 'tune', route: './parameters' },
-    // { label: 'Ciudades', icon: 'location_city', route: './ciudad-unidad-negocio',},
-    // { label: 'Línea negocio', icon: 'store', route: './lineas-negocio' },
-  ]);
-
-  selectItem(item: any): void {
-    const newMenuItems = this.menuItem().map(menuItem => {
-      if (menuItem === item) {
-        return { ...menuItem, isActive: false };
-      } else {
-        return { ...menuItem, isActive: true };
-      }
-    });
-    this.menuItem.set(newMenuItems);
-  }
 
   trackByItem(index: number, item: any): any {
     return item.route;
