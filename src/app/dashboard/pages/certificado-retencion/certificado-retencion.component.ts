@@ -212,7 +212,7 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
         this.coreSnackbarSv.openSnackbar(
             'No hay registros para esta fecha',
             'Cerrar',
-            ToastId.ERROR,
+            ToastId.WARNING,
             { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
         );
     } else {

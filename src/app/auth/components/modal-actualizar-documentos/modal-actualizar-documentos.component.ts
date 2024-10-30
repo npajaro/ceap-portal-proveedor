@@ -16,9 +16,16 @@ import { MatDialogModule } from '@angular/material/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalActualizarDocumentosComponent {
+  public readonly EMAIL = 'developer@mrbono.co';
+  private readonly SUBJECT = 'Solicitud actulizar datos';
+  private readonly MESSAGE = 'Hola Equipo de soporte, necesito actualizar mis documentos, por favor ayudame con este proceso.';
+
   public onClick(): void {
-    const mensaje = 'Hola Equipo de soporte, necesito actualizar mis documentos, por favor ayudame con este proceso.';
-    const urlEmail = `mailto:developer@mrbono.co?subject=Solicitud actulizar datos&body=${encodeURIComponent(mensaje)}`
+    const urlEmail = this.buildEmailUrl();
     window.open(urlEmail);
+  }
+
+  private buildEmailUrl(): string {
+    return `mailto:${this.EMAIL}?subject=${this.SUBJECT}&body=${encodeURIComponent(this.MESSAGE)}`;
   }
 }
