@@ -108,7 +108,6 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
     // Suscripción para resetear ciudad cuando cambia tipoCertificado
     this.myForm.get('tipoCertificado')?.valueChanges.subscribe(tipo => {
       this.currentYear(tipo);
-      console.log('tipo', tipo);
       if (tipo !== '3B' || tipo !== '3A') {
         this.myForm.patchValue({ ciudad: '' }, { emitEvent: false });
       }
@@ -290,7 +289,7 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
       ? Periodicity.YEARLY_ICA
       : Periodicity.YEARLY;
 
-    console.log('periodicity', periodicity);
+    // console.log('periodicity', periodicity);
 
     this.downloadPdf(row, periodicity);
   }
@@ -319,7 +318,7 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
         console.error('Error al descargar el certificado', error);
       },
       complete: () => {
-        console.log('complete')
+        // console.log('complete')
         this.spinnerSv.hide('consultar-certificados', 'spinnerDownload');
       }
     })

@@ -73,7 +73,7 @@ export class ApiService {
       map((res: DataProveedor) => {
         this._dataProveedor.set(res.data);
         this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
-        console.log('dataProveedor', res.data);
+        // console.log('dataProveedor', res.data);
         return res;
       }),
       catchError((err: HttpErrorResponse) => {

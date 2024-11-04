@@ -44,13 +44,13 @@ export class OtpPageComponent {
   public dataTercero: Tercero = this.getTerceroFromLocalStorage();
   public turnstileToken!: string;
 
-  countdown: number = 3;
+  countdown: number = 120;
   isResendDisabled: boolean = true;
   interval: any;
 
   ngOnInit() {
     this.startCountdown();
-    console.log(this.dataTercero);
+    // console.log(this.dataTercero);
   }
 
   handleInput(event: Event): void {
@@ -66,7 +66,7 @@ export class OtpPageComponent {
     this.turnstileToken = token;
     this.dataTercero.captchaToken = token;
     localStorage.setItem('tercero', JSON.stringify(this.dataTercero));
-    console.log({ token });
+    // console.log({ token });
   }
 
   public validateOTP() {
@@ -77,7 +77,7 @@ export class OtpPageComponent {
       this.lastOTPValue = tagOTP;
 
       if (tagOTP.length === 6) {
-        console.warn('El código OTP es correcto', { tagOTP });
+        // console.warn('El código OTP es correcto', { tagOTP });
         this.sendOtp(tagOTP);
       }
     }
@@ -140,7 +140,7 @@ export class OtpPageComponent {
 
   private handleOtpSuccess(data: any) {
     this.spinnerSv.hide('login', 'login');
-    console.log('Código OTP enviado correctamente', data);
+    // console.log('Código OTP enviado correctamente', data);
     this.router.navigateByUrl('/dashboard');
   }
 
@@ -175,7 +175,7 @@ export class OtpPageComponent {
   private handleResendOtpSuccess(data: any) {
     this.spinnerSv.hide('login', 'login');
     this.coreSnackbarService.openSnackbar(`Código OTP reenviado al correo ${this.dataTercero.email.toLowerCase()}`, 'Cerrar', this.toastId.SUCCESS);
-    console.log(`Código OTP reenviado al correo ${this.dataTercero.email.toLowerCase()}`, data);
+    // console.log(`Código OTP reenviado al correo ${this.dataTercero.email.toLowerCase()}`, data);
   }
 
   private refrehsPage() {

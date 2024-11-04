@@ -68,7 +68,6 @@ export class LoginComponent implements OnInit {
 
   onTokenReceived(token: string) {
     this.turnstileToken = token;
-    console.log({ token });
   }
 
   // Métodos de validación del formulario
@@ -150,7 +149,6 @@ export class LoginComponent implements OnInit {
   public openModal(): void {
     const isMobile = window.innerWidth <= 768;
 
-    console.log('isMobile', isMobile);
     const modalConfig = {
       width: isMobile ? '80vw' : '450px',
       maxWidth: isMobile ? '80vw' : '450px',
@@ -162,9 +160,9 @@ export class LoginComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         if (result) {
-          console.log('The dialog was closed');
+          // console.log('The dialog was closed');
         }
-        console.log('The dialog was closed');
+        // console.log('The dialog was closed');
       },
     });
   }
