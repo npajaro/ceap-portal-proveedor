@@ -105,21 +105,42 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
 
 
   ngOnInit(): void {
-    this.currentYear();
+    // Suscripción para resetear ciudad cuando cambia tipoCertificado
+    this.myForm.get('tipoCertificado')?.valueChanges.subscribe(tipo => {
+      this.currentYear(tipo);
+      console.log('tipo', tipo);
+      if (tipo !== '3B' || tipo !== '3A') {
+        this.myForm.patchValue({ ciudad: '' }, { emitEvent: false });
+      }
+    });
 
     // Suscripción a cambios en tipoCertificado y years
     this.myForm.valueChanges.subscribe(() => {
       const tipoCertificado = this.myForm.get('tipoCertificado')?.value;
       const years = this.myForm.get('years')?.value;
 
+      // Si el tipo de certificado cambió desde '3B' o '2B' a otro, restablecer el campo 'years'
+      if ((this.previousTipoCertificado === '3B' || this.previousTipoCertificado === '2B') &&
+          tipoCertificado !== this.previousTipoCertificado) {
+        this.myForm.patchValue({ years: '' }, { emitEvent: false });
+        this.previousTipoCertificado = tipoCertificado;
+        this.previousYears = '';
+        this.dataSource.data = [];
+        this.reporCertificados = [];
+        return; // Salir de la suscripción hasta que el usuario seleccione una fecha
+      }
+
       // Solo realizar la consulta si cambian tipoCertificado o years y son válidos
       if (this.myForm.get('tipoCertificado')?.valid &&
           this.myForm.get('years')?.valid &&
           (tipoCertificado !== this.previousTipoCertificado ||
-           years !== this.previousYears)) {
+          years !== this.previousYears)) {
 
         this.previousTipoCertificado = tipoCertificado;
         this.previousYears = years;
+
+        this.dataSource.data = [];
+        this.reporCertificados = [];
         this.getConsultCertificados(this.myForm.value);
       }
     });
@@ -129,12 +150,7 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
       this.filterDataByCiudad(ciudad);
     });
 
-    // Suscripción para resetear ciudad cuando cambia tipoCertificado
-    this.myForm.get('tipoCertificado')?.valueChanges.subscribe(tipo => {
-      if (tipo !== '3B' || tipo !== '3A') {
-        this.myForm.patchValue({ ciudad: '' }, { emitEvent: false });
-      }
-    });
+
   }
 
   ngAfterViewInit() {
@@ -310,25 +326,102 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
   }
 
 
-  public currentYear() {
-    const currentYear = new Date().getFullYear() - 1; // Restar 1 para excluir el año actual
-    let minYear = currentYear;
+  public currentYear(tipoCertificado: string = '') {
 
-    // Generar rangos individuales de años
-    for (let i = 0; i < 5; i++) {
-      const year = currentYear - i;
+    console.log('tipoCertificado', tipoCertificado);
+
+    if (tipoCertificado === '2B' || tipoCertificado === '3B') {
+      this.years = [];
+
+      const today = new Date();
+      const currentYears = today.getFullYear();
+
+      const lastAvailableBimester = this.getLastAvailableBimester(today);
+
+      for (let bimester = 1; bimester <= lastAvailableBimester; bimester++) {
+        const startMonth = (bimester * 2) - 1;
+        const endMonth = bimester * 2;
+
+        const startDate = new Date(currentYears, startMonth - 1, 1);
+        const endDate = new Date(currentYears, endMonth, 0); // Último día del mes
+
+        const startDateStr = `${currentYears}${('0' + startMonth).slice(-2)}01`;
+        const endDateStr = `${currentYears}${('0' + endMonth).slice(-2)}${('0' + endDate.getDate()).slice(-2)}`;
+
+        this.years.push({
+          name: `B${bimester} ${currentYears}`,
+          value: `${startDateStr}-${endDateStr}`
+        });
+      }
+
+
+      const currentYear = new Date().getFullYear() - 1;
+      let minYear = currentYear;
+
+      // Generar rangos individuales de años
+      for (let i = 0; i < 5; i++) {
+        const year = currentYear - i;
+        this.years.push({
+          name: `${year}`,
+          value: `${year}0101-${year}1231`
+        });
+        minYear = year; // Actualizar el año mínimo
+      }
+
+      // Agregar opción para seleccionar todo el rango de 5 años
       this.years.push({
-        name: `${year}`,
-        value: `${year}0101-${year}1231`
+        name: `Últimos 5 años`,
+        value: `${minYear}0101-${currentYear}1231`
       });
-      minYear = year; // Actualizar el año mínimo
+    } else {
+      this.years = [];
+
+      const currentYear = new Date().getFullYear() - 1; // Restar 1 para excluir el año actual
+      let minYear = currentYear;
+
+      // Generar rangos individuales de años
+      for (let i = 0; i < 5; i++) {
+        const year = currentYear - i;
+        this.years.push({
+          name: `${year}`,
+          value: `${year}0101-${year}1231`
+        });
+        minYear = year; // Actualizar el año mínimo
+      }
+
+      // Agregar opción para seleccionar todo el rango de 5 años
+      this.years.push({
+        name: `Últimos 5 años`,
+        value: `${minYear}0101-${currentYear}1231`
+      });
     }
 
-    // Agregar opción para seleccionar todo el rango de 5 años
-    this.years.push({
-      name: `Últimos 5 años`,
-      value: `${minYear}0101-${currentYear}1231`
-    });
+  }
+
+  private getLastAvailableBimester(today: Date): number {
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth(); // Mes actual (1-12)
+
+    // Calcular el bimestre actual
+    const currentBimester = Math.ceil(currentMonth / 2);
+
+    let lastAvailableBimester = currentBimester - 1;
+
+    // Fecha límite para considerar el bimestre actual disponible
+    const endMonthLimit = (currentBimester * 2) + 1; // Mes siguiente al final del bimestre
+    const limitDate = new Date(currentYear, endMonthLimit - 1, 15);
+
+    // Si hoy es igual o posterior al día 15 del mes límite, el bimestre actual está disponible
+    if (today >= limitDate) {
+      lastAvailableBimester = currentBimester;
+    }
+
+    // Asegurar que el número de bimestre no sea negativo
+    if (lastAvailableBimester < 1) {
+      lastAvailableBimester = 0;
+    }
+
+    return lastAvailableBimester;
   }
 
  }
