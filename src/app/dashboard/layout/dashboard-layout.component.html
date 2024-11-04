@@ -43,7 +43,7 @@
 
 
 
-  <mat-sidenav-content class="">
+  <mat-sidenav-content>
     @if (isHandset$ | async) {
   <div class="bg-gray-500">
     <mat-toolbar class="justify-between flex">
@@ -76,7 +76,7 @@
 
 
 
-    <section class="px-8 sm:p-8">
+    <section class="px-8 py-2">
 
       <section class="flex justify-between items-center content-center sm:pb-8">
         <picture class="hidden sm:block">
@@ -98,6 +98,14 @@
 
       <router-outlet/>
     </section>
+
+    <footer class="text-gray-900 p-2 text-center text-sm mt-auto flex">
+      <div class="container mx-auto">
+        <span class="mx-1">&#64;Powered by</span>
+        <a href="https://www.digitalgex.com" target="_blank" rel="noopener" class="font-semibold leading-6 text-gray-600 hover:text-gray-950">DigitalGex</a>
+      </div>
+    </footer>
+
 
   </mat-sidenav-content>
 </mat-sidenav-container>
