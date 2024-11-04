@@ -327,7 +327,7 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
 
   public currentYear(tipoCertificado: string = '') {
 
-    console.log('tipoCertificado', tipoCertificado);
+    // console.log('tipoCertificado', tipoCertificado);
 
     if (tipoCertificado === '2B' || tipoCertificado === '3B') {
       this.years = [];

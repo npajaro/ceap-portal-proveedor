@@ -87,7 +87,6 @@ export default class SettingsComponent {
       ...myFormValue
     }
 
-    console.log('dataProveedorToSend', dataProveedorToSend);
 
     // Enviar formulario
     this.apiSv.updateProveedor(dataProveedorToSend).subscribe({
