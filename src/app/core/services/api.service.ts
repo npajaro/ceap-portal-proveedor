@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { environment } from '@env/environment';
 import { Action, Certificados, Parametros, Periodicity } from '@interfaces/certificados.interfaces';
-import { Proveedor, Tercero } from '@interfaces/tercero.interface';
+import { DataProveedor, Proveedor, Tercero } from '@interfaces/tercero.interface';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { SpinnerService } from './spinner.service';
 
@@ -57,28 +57,45 @@ export class ApiService {
     return this.http.post(url, data, { headers, responseType: 'blob', params });
   }
 
-  public getProveedor(termino?: string): Observable<Proveedor[]> {
+  public getProveedor(): Observable<DataProveedor> {
     this.spinnerSv.show('consultar-certificados', 'spinnerLoading');
-    // const url = `${this.apiUrl}/api/tercero/get-proveedor`;
-    const url = `https://api-generator.retool.com/Ear69e/proveedor`;
+    const url = `${this.apiUrl}/api/v1/proveedor`;
 
-    const { headers, params } = this.getAuthHeaders('', '', termino);
+    const tercero: Tercero   = JSON.parse(localStorage.getItem('tercero') || '{}');
 
-    return this.http.get<Proveedor[]>(url)
+    const { headers } = this.getAuthHeaders();
+
+    const params = new HttpParams()
+    .set('nitProveedor', tercero.id || '');
+
+    return this.http.get<DataProveedor>(url, { params, headers })
     .pipe(
-      map((response: Proveedor[]) => {
+      map((res: DataProveedor) => {
+        this._dataProveedor.set(res.data);
         this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
-        const { id, ...rest } = response[0];
-        this._dataProveedor.set(rest as Proveedor);
-        // console.log(response[0]);
-        return response;
+        console.log('dataProveedor', res.data);
+        return res;
       }),
-      catchError((error: HttpErrorResponse) => {
+      catchError((err: HttpErrorResponse) => {
         this.spinnerSv.hide('consultar-certificados', 'spinnerLoading');
-        this._dataProveedor.set(null);
-        return throwError(() => error);
+        return throwError(() => err);
       })
-    )
+    );
+  }
+
+
+  public updateProveedor(data: Proveedor): Observable<Proveedor> {
+    const url = `${this.apiUrl}/api/v1/proveedor/update-proveedor`;
+
+    const tercero: Tercero   = JSON.parse(localStorage.getItem('tercero') || '{}');
+
+    const { headers } = this.getAuthHeaders();
+
+    const params = new HttpParams()
+    .set('nitProveedor', tercero.id || '');
+
+    return this.http.post<Proveedor>(url, data, { params, headers })
+
   }
 
 
