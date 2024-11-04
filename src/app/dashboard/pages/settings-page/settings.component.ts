@@ -67,13 +67,13 @@ export default class SettingsComponent {
   public onSubmit() {
     // Vetrificar si hay cambios
     if (this.hasFormChanges()) {
-      this.coreSnackBarSv.openSnackbar('No se han realizado cambios', 'Cerrar', ToastId.WARNING);
+      this.coreSnackBarSv.openSnackbar('No se han realizado cambios', 'Cerrar', ToastId.WARNING, { horizontalPosition: 'right' });
       return;
     }
 
     // Validar formulario
     if (this.myForm.invalid) {
-      this.coreSnackBarSv.openSnackbar('Por favor, complete los campos requeridos', 'Cerrar', ToastId.ERROR);
+      this.coreSnackBarSv.openSnackbar('Por favor, complete los campos requeridos', 'Cerrar', ToastId.ERROR, { horizontalPosition: 'right' });
       return;
     }
 
@@ -92,12 +92,12 @@ export default class SettingsComponent {
     // Enviar formulario
     this.apiSv.updateProveedor(dataProveedorToSend).subscribe({
       next: () => {
-        this.coreSnackBarSv.openSnackbar('Proveedor actualizado correctamente', 'Cerrar', ToastId.SUCCESS);
+        this.coreSnackBarSv.openSnackbar('Proveedor actualizado correctamente', 'Cerrar', ToastId.SUCCESS, { horizontalPosition: 'right' });
         this.apiSv.getProveedor().subscribe();
       },
       error: () => {
         console.error('Error al actualizar el proveedor', Error);
-        this.coreSnackBarSv.openSnackbar('Ha ocurrido un error al actualizar el proveedor', 'Cerrar', ToastId.ERROR);
+        this.coreSnackBarSv.openSnackbar('Ha ocurrido un error al actualizar el proveedor', 'Cerrar', ToastId.ERROR, { horizontalPosition: 'right' });
       }
     })
   }
