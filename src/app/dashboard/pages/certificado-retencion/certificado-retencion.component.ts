@@ -215,6 +215,8 @@ export default class CertificadoRetencionComponent implements OnInit, AfterViewI
             ToastId.WARNING,
             { verticalPosition: 'top', horizontalPosition: 'center', duration: 3000 }
         );
+        this.dataSource.data = [];
+        this.reporCertificados = [];
     } else {
         this.coreSnackbarSv.openSnackbar(
             'Error al consultar los certificados',
